@@ -1,0 +1,21 @@
+name: Publish
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write # PyPI Trusted Publishing (OIDC) — no stored token
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # hatch-vcs needs tag history to compute the version
+      - uses: astral-sh/setup-uv@v3
+        with:
+          python-version: "3.10"
+      - run: uv build
+      - uses: pypa/gh-action-pypi-publish@release/v1

@@ -1,0 +1,30 @@
+name: Regenerate client
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # weekly, Monday 09:00 UTC
+  workflow_dispatch:
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          python-version: "3.10"
+      - run: uv sync --extra dev
+      - run: uv run python scripts/generate_client.py --url https://api.dev.relevan.dev/openapi
+      - run: uv run ruff format .
+      - run: uv run ruff check --fix .
+      - name: Open a PR if the generated client changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: regenerate client from the live OpenAPI spec"
+          title: "chore: regenerate client from the live OpenAPI spec"
+          branch: regenerate-client
+          body: |
+            Automated regeneration of `src/relevan/_generated/` from
+            `https://api.dev.relevan.dev/openapi`. Review the diff for
+            breaking changes before merging — a removed or renamed field
+            here is a breaking change for this package's consumers.

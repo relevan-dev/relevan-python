@@ -7,6 +7,7 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+src/relevan/_version.py
 .python-version.local
 .env
 .env.*

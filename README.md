@@ -17,6 +17,7 @@ pip install relevan
 
 ```python
 from relevan import Client
+from relevan._generated.models.feedback_request_action_name import FeedbackRequestActionName
 
 client = Client()  # reads RELEVAN_API_KEY from the environment
 
@@ -24,16 +25,16 @@ org = client.organizations.list()[0]
 skill_doc = client.skill.get(org.id, "products")  # read once before querying an index
 
 results = client.search.search(org.id, "products", query="wireless headphones")
-for hit in results.hits:
-    print(hit.object_id, hit.explanation)
+for hit in results.results:
+    print(hit.id, hit.explanation)
 
 # Close the loop: tell Relevan what happened to a result.
 client.beta.send_feedback(
     org.id,
     "products",
-    action_name="click",
+    action_name=FeedbackRequestActionName.CLICK,
     query_id=results.search_context.query_id,
-    object_id=results.hits[0].object_id,
+    object_id=results.results[0].id,
     position=0,
 )
 ```
@@ -44,7 +45,8 @@ The async client mirrors this exactly:
 from relevan import AsyncClient
 
 async with AsyncClient() as client:
-    results = await client.search.search(org_id, "products", query="wireless headphones")
+    org = (await client.organizations.list())[0]
+    results = await client.search.search(org.id, "products", query="wireless headphones")
 ```
 
 ## Authentication
@@ -56,12 +58,14 @@ is never written to disk or logged, and is masked in `repr(client)`.
 
 ## Rate limits
 
-Relevan enforces per-organization rate limits (see the `RateLimit-*`
-response headers, exposed on search responses as `.rate_limit`). On a
-`429`, the client retries automatically using the server's `Retry-After`
-value (`max_retries=2` by default, configurable via
-`Client(max_retries=...)`). A `RelevanRateLimitError` is raised only if
-retries are exhausted.
+Relevan enforces per-organization rate limits. On a `429`, the client
+retries automatically using the server's `Retry-After` value
+(`max_retries=2` by default, configurable via `Client(max_retries=...)`).
+A `RelevanRateLimitError` is raised only if retries are exhausted.
+
+After each `client.search.search(...)` call, `client.search.last_rate_limit`
+holds the org's current `RateLimit-*` snapshot (`.limit`, `.remaining`,
+`.reset_seconds`), so callers can self-throttle proactively if they want to.
 
 ## Beta endpoints
 
