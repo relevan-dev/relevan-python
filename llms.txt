@@ -1,0 +1,16 @@
+# relevan (Python)
+
+> Python client for the Relevan search API — typed, generated from Relevan's live OpenAPI spec, with built-in rate-limit retry and clearly-marked beta endpoints.
+
+## Reference
+
+- [README](https://github.com/relevan/relevan-python/blob/main/README.md): install, quickstart, auth, rate limits, beta endpoints.
+- Every public method carries a full docstring (Args/Returns/Raises/Example) — introspect with `help(client.search.search)` rather than guessing signatures.
+- [Relevan API's own llms.txt](https://api.relevan.dev/llms.txt): the underlying HTTP API this client wraps, including why sending feedback after a search matters.
+
+## Notes for an agent using this package
+
+- `Client()` / `AsyncClient()` read `RELEVAN_API_KEY` from the environment; pass `api_key=` to override.
+- Call `client.organizations.list()` once to resolve `orgId` before calling any other method.
+- `client.search.search(...)` returns `search_context.query_id` — pass it to `client.beta.send_feedback(...)` after acting on a result. This is not optional: it is what improves future search quality.
+- Anything under `client.beta` may change without notice; each call raises `RelevanBetaWarning`.

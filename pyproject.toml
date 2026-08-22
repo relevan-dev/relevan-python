@@ -1,0 +1,57 @@
+[project]
+name = "relevan"
+description = "Python client for the Relevan search API"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+authors = [{ name = "Relevan" }]
+dynamic = ["version"]
+dependencies = ["httpx>=0.27", "attrs>=23.2"]
+
+[project.urls]
+Homepage = "https://relevan.dev"
+Documentation = "https://relevan.dev/docs"
+Repository = "https://github.com/relevan/relevan-python"
+
+[project.optional-dependencies]
+dev = [
+    "openapi-python-client>=0.21",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "respx>=0.21",
+]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/relevan"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+extend-exclude = ["src/relevan/_generated"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.mypy]
+strict = true
+exclude = ["src/relevan/_generated"]
+
+[[tool.mypy.overrides]]
+module = "relevan._generated.*"
+ignore_errors = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
