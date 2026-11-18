@@ -12,6 +12,7 @@ from .resources.mappings import Mappings
 from .resources.organizations import Organizations
 from .resources.search import Search
 from .resources.skill import Skill
+from .resources.usage import UsageResource
 
 DEFAULT_BASE_URL = "https://api.relevan.dev"
 DEFAULT_TIMEOUT = 30.0
@@ -69,6 +70,7 @@ class Client:
         self.mappings = Mappings(generated)
         self.search = Search(generated)
         self.skill = Skill(generated)
+        self.usage = UsageResource(generated)
         self.beta = Beta(generated)
 
     def close(self) -> None:

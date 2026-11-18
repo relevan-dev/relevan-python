@@ -12,6 +12,7 @@ from .resources.mappings import AsyncMappings
 from .resources.organizations import AsyncOrganizations
 from .resources.search import AsyncSearch
 from .resources.skill import AsyncSkill
+from .resources.usage import AsyncUsage
 
 DEFAULT_BASE_URL = "https://api.relevan.dev"
 DEFAULT_TIMEOUT = 30.0
@@ -71,6 +72,7 @@ class AsyncClient:
         self.mappings = AsyncMappings(generated)
         self.search = AsyncSearch(generated)
         self.skill = AsyncSkill(generated)
+        self.usage = AsyncUsage(generated)
         self.beta = AsyncBeta(generated)
 
     async def aclose(self) -> None:

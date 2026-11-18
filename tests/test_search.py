@@ -25,6 +25,7 @@ def _search_success_body() -> dict:
             "totalHits": 1,
             "matchedTerms": ["tetra"],
             "topContributingFields": ["name"],
+            "titleField": "name",
             "scoringSummary": "1 field matched",
             "suggestions": "",
             "searchableFields": ["name", "description"],
