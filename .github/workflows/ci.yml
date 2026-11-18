@@ -32,3 +32,8 @@ jobs:
           python-version: "3.10"
       - run: uv build
       - run: uvx twine check --strict dist/*
+      - name: Import the wheel in a clean environment
+        run: |
+          uv venv /tmp/wheel-check
+          uv pip install --python /tmp/wheel-check dist/*.whl
+          /tmp/wheel-check/bin/python -c "import relevan; print(relevan.__version__)"
