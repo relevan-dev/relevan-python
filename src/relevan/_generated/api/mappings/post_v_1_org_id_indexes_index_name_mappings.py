@@ -89,6 +89,8 @@ def sync_detailed(
      Create a new field mapping revision for an index. Mapping revisions are immutable and stored in
     append-only history. To update mappings, create a new revision.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -128,6 +130,8 @@ def sync(
      Create a new field mapping revision for an index. Mapping revisions are immutable and stored in
     append-only history. To update mappings, create a new revision.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -161,6 +165,8 @@ async def asyncio_detailed(
 
      Create a new field mapping revision for an index. Mapping revisions are immutable and stored in
     append-only history. To update mappings, create a new revision.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):
@@ -198,6 +204,8 @@ async def asyncio(
 
      Create a new field mapping revision for an index. Mapping revisions are immutable and stored in
     append-only history. To update mappings, create a new revision.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):

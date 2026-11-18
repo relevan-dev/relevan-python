@@ -75,6 +75,8 @@ def sync_detailed(
 
      Retrieve the mapping given the mapping ID.
 
+    Permission: `read`. A read API key or a write API key can call this route.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -114,6 +116,8 @@ def sync(
 
      Retrieve the mapping given the mapping ID.
 
+    Permission: `read`. A read API key or a write API key can call this route.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -147,6 +151,8 @@ async def asyncio_detailed(
     """Get index mapping
 
      Retrieve the mapping given the mapping ID.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -184,6 +190,8 @@ async def asyncio(
     """Get index mapping
 
      Retrieve the mapping given the mapping ID.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):

@@ -88,6 +88,8 @@ def sync_detailed(
 
      Update index metadata (name, description). To change field mappings, create a new mapping revision.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -126,6 +128,8 @@ def sync(
 
      Update index metadata (name, description). To change field mappings, create a new mapping revision.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -158,6 +162,8 @@ async def asyncio_detailed(
     """Update index metadata
 
      Update index metadata (name, description). To change field mappings, create a new mapping revision.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):
@@ -194,6 +200,8 @@ async def asyncio(
     """Update index metadata
 
      Update index metadata (name, description). To change field mappings, create a new mapping revision.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):

@@ -26,8 +26,11 @@ class SearchHit:
         explanation (str): Human-readable description of why this document matched Example: "neon tetra" in description
             (4.20). Total score: 12.400.
         matched_fields (list[str]): Base field names that contributed to this hit's score
-        matched_terms (list[str]): Indexed terms that contributed to this hit's score
+        matched_terms (list[str]): Document words (lowercase) that matched and contributed to the score
         highlights (SearchHitHighlights | Unset): Highlighted text snippets by field
+        decay_profile (None | str | Unset): The recency decay profile that scaled the score of this hit: "type:<value>"
+            for a type of the index, "default", or null when the hit does not decay. Absent when the index has no recency
+            decay. Example: type:note.
     """
 
     id: str
@@ -37,6 +40,7 @@ class SearchHit:
     matched_fields: list[str]
     matched_terms: list[str]
     highlights: SearchHitHighlights | Unset = UNSET
+    decay_profile: str | Unset | None = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -57,6 +61,12 @@ class SearchHit:
         if not isinstance(self.highlights, Unset):
             highlights = self.highlights.to_dict()
 
+        decay_profile: str | Unset | None
+        if isinstance(self.decay_profile, Unset):
+            decay_profile = UNSET
+        else:
+            decay_profile = self.decay_profile
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
@@ -71,6 +81,8 @@ class SearchHit:
         )
         if highlights is not UNSET:
             field_dict["highlights"] = highlights
+        if decay_profile is not UNSET:
+            field_dict["decayProfile"] = decay_profile
 
         return field_dict
 
@@ -104,6 +116,15 @@ class SearchHit:
         else:
             highlights = SearchHitHighlights.from_dict(_highlights)
 
+        def _parse_decay_profile(data: object) -> str | Unset | None:
+            if data is None:
+                return data
+            if isinstance(data, Unset):
+                return data
+            return cast(None | str | Unset, data)
+
+        decay_profile = _parse_decay_profile(d.pop("decayProfile", UNSET))
+
         search_hit = cls(
             id=id,
             score=score,
@@ -112,6 +133,7 @@ class SearchHit:
             matched_fields=matched_fields,
             matched_terms=matched_terms,
             highlights=highlights,
+            decay_profile=decay_profile,
         )
 
         search_hit.additional_properties = d

@@ -68,9 +68,11 @@ def sync_detailed(
 ) -> Response[ErrorResponse | str]:
     """Get an agent-oriented skill doc for this index
 
-     Returns a Markdown document describing this index's live schema and how to query it — meant for an
-    LLM/agent to fetch once and use to drive `POST /indexes/{indexName}/search` calls without prior
-    knowledge of the mapping.
+     Returns a Markdown document describing this index's live schema, its search features, and how to
+    query it — meant for an LLM/agent to fetch once and use to drive `POST /indexes/{indexName}/search`
+    calls without prior knowledge of the mapping.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -105,9 +107,11 @@ def sync(
 ) -> ErrorResponse | str | None:
     """Get an agent-oriented skill doc for this index
 
-     Returns a Markdown document describing this index's live schema and how to query it — meant for an
-    LLM/agent to fetch once and use to drive `POST /indexes/{indexName}/search` calls without prior
-    knowledge of the mapping.
+     Returns a Markdown document describing this index's live schema, its search features, and how to
+    query it — meant for an LLM/agent to fetch once and use to drive `POST /indexes/{indexName}/search`
+    calls without prior knowledge of the mapping.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -137,9 +141,11 @@ async def asyncio_detailed(
 ) -> Response[ErrorResponse | str]:
     """Get an agent-oriented skill doc for this index
 
-     Returns a Markdown document describing this index's live schema and how to query it — meant for an
-    LLM/agent to fetch once and use to drive `POST /indexes/{indexName}/search` calls without prior
-    knowledge of the mapping.
+     Returns a Markdown document describing this index's live schema, its search features, and how to
+    query it — meant for an LLM/agent to fetch once and use to drive `POST /indexes/{indexName}/search`
+    calls without prior knowledge of the mapping.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -172,9 +178,11 @@ async def asyncio(
 ) -> ErrorResponse | str | None:
     """Get an agent-oriented skill doc for this index
 
-     Returns a Markdown document describing this index's live schema and how to query it — meant for an
-    LLM/agent to fetch once and use to drive `POST /indexes/{indexName}/search` calls without prior
-    knowledge of the mapping.
+     Returns a Markdown document describing this index's live schema, its search features, and how to
+    query it — meant for an LLM/agent to fetch once and use to drive `POST /indexes/{indexName}/search`
+    calls without prior knowledge of the mapping.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):

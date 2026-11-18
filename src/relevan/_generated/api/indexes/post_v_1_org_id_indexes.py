@@ -7,8 +7,8 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_index import CreateIndex
+from ...models.created_index import CreatedIndex
 from ...models.error_response import ErrorResponse
-from ...models.index import Index
 from ...types import UNSET, Response, Unset
 
 
@@ -37,9 +37,9 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | Index | None:
+) -> CreatedIndex | ErrorResponse | None:
     if response.status_code == 201:
-        response_201 = Index.from_dict(response.json())
+        response_201 = CreatedIndex.from_dict(response.json())
 
         return response_201
 
@@ -66,7 +66,7 @@ def _parse_response(
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | Index]:
+) -> Response[CreatedIndex | ErrorResponse]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -80,10 +80,15 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: CreateIndex | Unset = UNSET,
-) -> Response[ErrorResponse | Index]:
+) -> Response[CreatedIndex | ErrorResponse]:
     """Create a new index
 
-     Create a new search index in the organization.
+     Create a new search index in the organization. Right after you create the index, give the user the
+    `consoleUrl` link from the response, in your next message. Do this before you deploy a mapping or
+    upload documents. Do not wait and give the link only in a final summary. Tell the user to open the
+    link to monitor the progress. Fetch `skillUrl` next, before you draft a mapping.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):
@@ -94,7 +99,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ErrorResponse | Index]
+        Response[CreatedIndex | ErrorResponse]
     """
 
     kwargs = _get_kwargs(
@@ -114,10 +119,15 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: CreateIndex | Unset = UNSET,
-) -> ErrorResponse | Index | None:
+) -> CreatedIndex | ErrorResponse | None:
     """Create a new index
 
-     Create a new search index in the organization.
+     Create a new search index in the organization. Right after you create the index, give the user the
+    `consoleUrl` link from the response, in your next message. Do this before you deploy a mapping or
+    upload documents. Do not wait and give the link only in a final summary. Tell the user to open the
+    link to monitor the progress. Fetch `skillUrl` next, before you draft a mapping.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):
@@ -128,7 +138,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ErrorResponse | Index
+        CreatedIndex | ErrorResponse
     """
 
     return sync_detailed(
@@ -143,10 +153,15 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: CreateIndex | Unset = UNSET,
-) -> Response[ErrorResponse | Index]:
+) -> Response[CreatedIndex | ErrorResponse]:
     """Create a new index
 
-     Create a new search index in the organization.
+     Create a new search index in the organization. Right after you create the index, give the user the
+    `consoleUrl` link from the response, in your next message. Do this before you deploy a mapping or
+    upload documents. Do not wait and give the link only in a final summary. Tell the user to open the
+    link to monitor the progress. Fetch `skillUrl` next, before you draft a mapping.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):
@@ -157,7 +172,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ErrorResponse | Index]
+        Response[CreatedIndex | ErrorResponse]
     """
 
     kwargs = _get_kwargs(
@@ -175,10 +190,15 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: CreateIndex | Unset = UNSET,
-) -> ErrorResponse | Index | None:
+) -> CreatedIndex | ErrorResponse | None:
     """Create a new index
 
-     Create a new search index in the organization.
+     Create a new search index in the organization. Right after you create the index, give the user the
+    `consoleUrl` link from the response, in your next message. Do this before you deploy a mapping or
+    upload documents. Do not wait and give the link only in a final summary. Tell the user to open the
+    link to monitor the progress. Fetch `skillUrl` next, before you draft a mapping.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):
@@ -189,7 +209,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ErrorResponse | Index
+        CreatedIndex | ErrorResponse
     """
 
     return (

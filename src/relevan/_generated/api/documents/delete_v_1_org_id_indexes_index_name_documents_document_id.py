@@ -76,6 +76,8 @@ def sync_detailed(
      Tombstones a document in Aurora and enqueues removal from OpenSearch. The document will no longer
     appear in search results once processed.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str):
@@ -114,6 +116,8 @@ def sync(
      Tombstones a document in Aurora and enqueues removal from OpenSearch. The document will no longer
     appear in search results once processed.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str):
@@ -146,6 +150,8 @@ async def asyncio_detailed(
 
      Tombstones a document in Aurora and enqueues removal from OpenSearch. The document will no longer
     appear in search results once processed.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):
@@ -182,6 +188,8 @@ async def asyncio(
 
      Tombstones a document in Aurora and enqueues removal from OpenSearch. The document will no longer
     appear in search results once processed.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):

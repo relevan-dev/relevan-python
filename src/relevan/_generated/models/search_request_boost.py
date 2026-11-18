@@ -12,7 +12,8 @@ T = TypeVar("T", bound="SearchRequestBoost")
 @_attrs_define
 class SearchRequestBoost:
     """Per-term weight multipliers. Adds an extra match clause for each term across searchable fields; it does not change
-    how the base query matches.
+    how the base query matches. Each term must occur in the query. The search ignores a term that does not, and names it
+    in searchContext.warnings.
 
         Example:
             {'getting': 2}

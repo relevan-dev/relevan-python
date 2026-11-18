@@ -11,6 +11,7 @@ from ..types import UNSET, Unset
 if TYPE_CHECKING:
     from ..models.search_filter_type_0 import SearchFilterType0
     from ..models.search_filter_type_1 import SearchFilterType1
+    from ..models.search_range_filter import SearchRangeFilter
     from ..models.search_request_boost import SearchRequestBoost
 
 
@@ -22,9 +23,21 @@ class SearchRequest:
     """
     Attributes:
         query (str): The search query text Example: neon tetra.
-        filters (list[SearchFilterType0 | SearchFilterType1] | Unset): Exact-match filters, ANDed together
+        filters (list[SearchFilterType0 | SearchFilterType1 | SearchRangeFilter] | Unset): Filters, ANDed together.
+            Exact-match, in, or range (date/number fields).
+        partition (str | Unset): The one partition to search, for an index that declares a partition field (for example
+            `tenant_id`). Such an index refuses a request with no partition (400). The server applies it as an exact-match
+            filter on the partition field, and a filter on that field is a 400. An index with no partition field refuses
+            this value (400). Example: tenant-1187.
+        routing (str | Unset): A value of the routing field, for an index that routes its documents by a field (for
+            example `tenant_id`). The request then reads only the shard of that value, which is faster on an index with more
+            than one shard. It adds no filter: the shard can hold documents with other values, so filter on the field, or
+            use `partition`, to get only that value. With no value, the request reads each shard. When the partition and the
+            routing use the same field, the `partition` value is also the routing value, so do not send `routing`. An index
+            with no routing field refuses this value (400). Example: tenant-1187.
         boost (SearchRequestBoost | Unset): Per-term weight multipliers. Adds an extra match clause for each term across
-            searchable fields; it does not change how the base query matches. Example: {'getting': 2}.
+            searchable fields; it does not change how the base query matches. Each term must occur in the query. The search
+            ignores a term that does not, and names it in searchContext.warnings. Example: {'getting': 2}.
         from_ (int | Unset): Result offset for pagination (max 500)
         size (int | Unset): Number of results to return (max 100) Example: 10.
         session_id (str | Unset): Groups requests from the same conversation. Send back the sessionId from the previous
@@ -34,7 +47,9 @@ class SearchRequest:
     """
 
     query: str
-    filters: list[SearchFilterType0 | SearchFilterType1] | Unset = UNSET
+    filters: list[SearchFilterType0 | SearchFilterType1 | SearchRangeFilter] | Unset = UNSET
+    partition: str | Unset = UNSET
+    routing: str | Unset = UNSET
     boost: SearchRequestBoost | Unset = UNSET
     from_: int | Unset = UNSET
     size: int | Unset = UNSET
@@ -44,6 +59,7 @@ class SearchRequest:
 
     def to_dict(self) -> dict[str, Any]:
         from ..models.search_filter_type_0 import SearchFilterType0
+        from ..models.search_filter_type_1 import SearchFilterType1
 
         query = self.query
 
@@ -52,12 +68,18 @@ class SearchRequest:
             filters = []
             for filters_item_data in self.filters:
                 filters_item: dict[str, Any]
-                if isinstance(filters_item_data, SearchFilterType0):
+                if isinstance(filters_item_data, SearchFilterType0) or isinstance(
+                    filters_item_data, SearchFilterType1
+                ):
                     filters_item = filters_item_data.to_dict()
                 else:
                     filters_item = filters_item_data.to_dict()
 
                 filters.append(filters_item)
+
+        partition = self.partition
+
+        routing = self.routing
 
         boost: dict[str, Any] | Unset = UNSET
         if not isinstance(self.boost, Unset):
@@ -80,6 +102,10 @@ class SearchRequest:
         )
         if filters is not UNSET:
             field_dict["filters"] = filters
+        if partition is not UNSET:
+            field_dict["partition"] = partition
+        if routing is not UNSET:
+            field_dict["routing"] = routing
         if boost is not UNSET:
             field_dict["boost"] = boost
         if from_ is not UNSET:
@@ -97,18 +123,21 @@ class SearchRequest:
     def from_dict(cls: type[T], src_dict: Mapping[str, Any]) -> T:
         from ..models.search_filter_type_0 import SearchFilterType0
         from ..models.search_filter_type_1 import SearchFilterType1
+        from ..models.search_range_filter import SearchRangeFilter
         from ..models.search_request_boost import SearchRequestBoost
 
         d = dict(src_dict)
         query = d.pop("query")
 
         _filters = d.pop("filters", UNSET)
-        filters: list[SearchFilterType0 | SearchFilterType1] | Unset = UNSET
+        filters: list[SearchFilterType0 | SearchFilterType1 | SearchRangeFilter] | Unset = UNSET
         if _filters is not UNSET:
             filters = []
             for filters_item_data in _filters:
 
-                def _parse_filters_item(data: object) -> SearchFilterType0 | SearchFilterType1:
+                def _parse_filters_item(
+                    data: object,
+                ) -> SearchFilterType0 | SearchFilterType1 | SearchRangeFilter:
                     try:
                         if not isinstance(data, dict):
                             raise TypeError()
@@ -117,15 +146,27 @@ class SearchRequest:
                         return componentsschemas_search_filter_type_0
                     except (TypeError, ValueError, AttributeError, KeyError):
                         pass
+                    try:
+                        if not isinstance(data, dict):
+                            raise TypeError()
+                        componentsschemas_search_filter_type_1 = SearchFilterType1.from_dict(data)
+
+                        return componentsschemas_search_filter_type_1
+                    except (TypeError, ValueError, AttributeError, KeyError):
+                        pass
                     if not isinstance(data, dict):
                         raise TypeError()
-                    componentsschemas_search_filter_type_1 = SearchFilterType1.from_dict(data)
+                    componentsschemas_search_filter_type_2 = SearchRangeFilter.from_dict(data)
 
-                    return componentsschemas_search_filter_type_1
+                    return componentsschemas_search_filter_type_2
 
                 filters_item = _parse_filters_item(filters_item_data)
 
                 filters.append(filters_item)
+
+        partition = d.pop("partition", UNSET)
+
+        routing = d.pop("routing", UNSET)
 
         _boost = d.pop("boost", UNSET)
         boost: SearchRequestBoost | Unset
@@ -145,6 +186,8 @@ class SearchRequest:
         search_request = cls(
             query=query,
             filters=filters,
+            partition=partition,
+            routing=routing,
             boost=boost,
             from_=from_,
             size=size,

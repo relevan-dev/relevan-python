@@ -86,6 +86,8 @@ def sync_detailed(
 
      Get paginated active documents in a specific index.
 
+    Permission: `read`. A read API key or a write API key can call this route.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -127,6 +129,8 @@ def sync(
 
      Get paginated active documents in a specific index.
 
+    Permission: `read`. A read API key or a write API key can call this route.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -162,6 +166,8 @@ async def asyncio_detailed(
     """List documents in an index
 
      Get paginated active documents in a specific index.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -201,6 +207,8 @@ async def asyncio(
     """List documents in an index
 
      Get paginated active documents in a specific index.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):

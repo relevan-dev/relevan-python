@@ -85,6 +85,8 @@ def sync_detailed(
 
      Retrieve a list of all indexes in the organization.
 
+    Permission: `read`. A read API key or a write API key can call this route.
+
     Args:
         org_id (str):
         page (int | Unset): Page number for pagination Example: 1.
@@ -122,6 +124,8 @@ def sync(
 
      Retrieve a list of all indexes in the organization.
 
+    Permission: `read`. A read API key or a write API key can call this route.
+
     Args:
         org_id (str):
         page (int | Unset): Page number for pagination Example: 1.
@@ -153,6 +157,8 @@ async def asyncio_detailed(
     """List all indexes
 
      Retrieve a list of all indexes in the organization.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -188,6 +194,8 @@ async def asyncio(
     """List all indexes
 
      Retrieve a list of all indexes in the organization.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):

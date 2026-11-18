@@ -72,6 +72,8 @@ def sync_detailed(
 
      Archive and remove an index. Search cleanup happens asynchronously.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -107,6 +109,8 @@ def sync(
 
      Archive and remove an index. Search cleanup happens asynchronously.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -136,6 +140,8 @@ async def asyncio_detailed(
     """Delete an index
 
      Archive and remove an index. Search cleanup happens asynchronously.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):
@@ -169,6 +175,8 @@ async def asyncio(
     """Delete an index
 
      Archive and remove an index. Search cleanup happens asynchronously.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):

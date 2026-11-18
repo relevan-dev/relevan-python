@@ -7,7 +7,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
-from ...models.index import Index
+from ...models.index_detail import IndexDetail
 from ...types import Response
 
 
@@ -29,9 +29,9 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | Index | None:
+) -> ErrorResponse | IndexDetail | None:
     if response.status_code == 200:
-        response_200 = Index.from_dict(response.json())
+        response_200 = IndexDetail.from_dict(response.json())
 
         return response_200
 
@@ -53,7 +53,7 @@ def _parse_response(
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | Index]:
+) -> Response[ErrorResponse | IndexDetail]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -67,10 +67,13 @@ def sync_detailed(
     index_name: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[ErrorResponse | Index]:
+) -> Response[ErrorResponse | IndexDetail]:
     """Get index by name
 
-     Retrieve a specific index by its name.
+     Retrieve a specific index by its name, with the document counts that show how far the index has got
+    through the asynchronous ingest pipeline.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -82,7 +85,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ErrorResponse | Index]
+        Response[ErrorResponse | IndexDetail]
     """
 
     kwargs = _get_kwargs(
@@ -102,10 +105,13 @@ def sync(
     index_name: str,
     *,
     client: AuthenticatedClient | Client,
-) -> ErrorResponse | Index | None:
+) -> ErrorResponse | IndexDetail | None:
     """Get index by name
 
-     Retrieve a specific index by its name.
+     Retrieve a specific index by its name, with the document counts that show how far the index has got
+    through the asynchronous ingest pipeline.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -117,7 +123,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ErrorResponse | Index
+        ErrorResponse | IndexDetail
     """
 
     return sync_detailed(
@@ -132,10 +138,13 @@ async def asyncio_detailed(
     index_name: str,
     *,
     client: AuthenticatedClient | Client,
-) -> Response[ErrorResponse | Index]:
+) -> Response[ErrorResponse | IndexDetail]:
     """Get index by name
 
-     Retrieve a specific index by its name.
+     Retrieve a specific index by its name, with the document counts that show how far the index has got
+    through the asynchronous ingest pipeline.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -147,7 +156,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ErrorResponse | Index]
+        Response[ErrorResponse | IndexDetail]
     """
 
     kwargs = _get_kwargs(
@@ -165,10 +174,13 @@ async def asyncio(
     index_name: str,
     *,
     client: AuthenticatedClient | Client,
-) -> ErrorResponse | Index | None:
+) -> ErrorResponse | IndexDetail | None:
     """Get index by name
 
-     Retrieve a specific index by its name.
+     Retrieve a specific index by its name, with the document counts that show how far the index has got
+    through the asynchronous ingest pipeline.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -180,7 +192,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ErrorResponse | Index
+        ErrorResponse | IndexDetail
     """
 
     return (

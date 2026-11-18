@@ -68,6 +68,8 @@ def sync_detailed(
     that holds a key but doesn't yet know its `orgId`. Either `id` or `slug` from the response works as
     the `orgId` path parameter on `/v1/{orgId}/...` routes.
 
+    Permission: `read`. A read API key or a write API key can call this route.
+
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -96,6 +98,8 @@ def sync(
     that holds a key but doesn't yet know its `orgId`. Either `id` or `slug` from the response works as
     the `orgId` path parameter on `/v1/{orgId}/...` routes.
 
+    Permission: `read`. A read API key or a write API key can call this route.
+
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
@@ -119,6 +123,8 @@ async def asyncio_detailed(
     scoped API key always resolves to exactly one organization — this is the entry point for an agent
     that holds a key but doesn't yet know its `orgId`. Either `id` or `slug` from the response works as
     the `orgId` path parameter on `/v1/{orgId}/...` routes.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -145,6 +151,8 @@ async def asyncio(
     scoped API key always resolves to exactly one organization — this is the entry point for an agent
     that holds a key but doesn't yet know its `orgId`. Either `id` or `slug` from the response works as
     the `orgId` path parameter on `/v1/{orgId}/...` routes.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.

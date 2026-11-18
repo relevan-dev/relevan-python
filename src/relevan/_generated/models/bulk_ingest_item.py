@@ -19,7 +19,8 @@ class BulkIngestItem:
     Attributes:
         id (str): Caller-supplied document ID, unique within the index. Alphanumeric, underscore, period, colon, and
             hyphen only. Example: sku-12345.
-        content (BulkIngestItemContent): Document content. All fields must be declared in the index mapping.
+        content (BulkIngestItemContent): Document content. All fields must be declared in the index mapping. Serialized
+            JSON size capped at 1048576 bytes.
     """
 
     id: str
