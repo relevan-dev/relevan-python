@@ -4,6 +4,13 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+- Every 4xx or 5xx response raises a typed error (`RelevanAuthError`,
+  `RelevanRateLimitError`, or `RelevanAPIError`), also when the body has no
+  `message`, is not JSON, or has a status the spec does not document. Before,
+  such a body raised `KeyError('message')`, a JSON decode error, or
+  `UnexpectedStatus`. Without a `message`, the error message is
+  `"<METHOD> <path> failed (<status>)"`.
+
 ## 0.1.0 - 2026-11-18
 
 First release on PyPI.

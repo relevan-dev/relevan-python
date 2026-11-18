@@ -5,6 +5,7 @@ import httpx
 from ._auth import mask_api_key, resolve_api_key
 from ._generated.client import AuthenticatedClient
 from ._rate_limit import DEFAULT_MAX_RETRIES, RetryingTransport
+from ._unwrap import raise_for_error_status
 from .resources.beta import Beta
 from .resources.documents import Documents
 from .resources.indexes import Indexes
@@ -60,6 +61,7 @@ class Client:
                 headers={"x-api-key": self._api_key},
                 timeout=timeout,
                 transport=RetryingTransport(httpx.HTTPTransport(), max_retries=max_retries),
+                event_hooks={"response": [raise_for_error_status]},
             )
         )
         self._generated = generated
