@@ -51,7 +51,9 @@ async def raise_for_error_status_async(response: httpx.Response) -> None:
 
 def _error_for_response(response: httpx.Response) -> RelevanError:
     endpoint = f"{response.request.method} {response.request.url.path}"
-    return error_for(response.status_code, response.content, response.headers, endpoint=endpoint)
+    error = error_for(response.status_code, response.content, response.headers, endpoint=endpoint)
+    error.headers = response.headers
+    return error
 
 
 def error_for(
