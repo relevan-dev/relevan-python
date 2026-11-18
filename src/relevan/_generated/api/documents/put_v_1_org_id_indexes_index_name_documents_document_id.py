@@ -97,6 +97,8 @@ def sync_detailed(
 
      Replaces document content. All provided fields must be declared in the index mapping.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str):
@@ -137,6 +139,8 @@ def sync(
 
      Replaces document content. All provided fields must be declared in the index mapping.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str):
@@ -171,6 +175,8 @@ async def asyncio_detailed(
     """Update a document
 
      Replaces document content. All provided fields must be declared in the index mapping.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):
@@ -209,6 +215,8 @@ async def asyncio(
     """Update a document
 
      Replaces document content. All provided fields must be declared in the index mapping.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):

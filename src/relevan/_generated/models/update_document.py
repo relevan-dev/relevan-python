@@ -17,7 +17,8 @@ T = TypeVar("T", bound="UpdateDocument")
 class UpdateDocument:
     """
     Attributes:
-        content (UpdateDocumentContent): Document content. All fields must be declared in the index mapping.
+        content (UpdateDocumentContent): Document content. All fields must be declared in the index mapping. Serialized
+            JSON size capped at 1048576 bytes.
     """
 
     content: UpdateDocumentContent

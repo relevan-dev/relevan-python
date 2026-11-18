@@ -8,6 +8,7 @@ from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response import ErrorResponse
 from ...models.limit_error_response import LimitErrorResponse
+from ...models.search_quota_error_response import SearchQuotaErrorResponse
 from ...models.search_request import SearchRequest
 from ...models.search_result import SearchResult
 from ...types import UNSET, Response, Unset
@@ -40,7 +41,7 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> ErrorResponse | LimitErrorResponse | SearchResult | None:
+) -> ErrorResponse | LimitErrorResponse | SearchQuotaErrorResponse | SearchResult | None:
     if response.status_code == 200:
         response_200 = SearchResult.from_dict(response.json())
 
@@ -56,6 +57,11 @@ def _parse_response(
 
         return response_401
 
+    if response.status_code == 402:
+        response_402 = SearchQuotaErrorResponse.from_dict(response.json())
+
+        return response_402
+
     if response.status_code == 404:
         response_404 = ErrorResponse.from_dict(response.json())
 
@@ -66,6 +72,11 @@ def _parse_response(
 
         return response_429
 
+    if response.status_code == 503:
+        response_503 = ErrorResponse.from_dict(response.json())
+
+        return response_503
+
     if client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
@@ -74,7 +85,7 @@ def _parse_response(
 
 def _build_response(
     *, client: AuthenticatedClient | Client, response: httpx.Response
-) -> Response[ErrorResponse | LimitErrorResponse | SearchResult]:
+) -> Response[ErrorResponse | LimitErrorResponse | SearchQuotaErrorResponse | SearchResult]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -89,11 +100,13 @@ def sync_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: SearchRequest | Unset = UNSET,
-) -> Response[ErrorResponse | LimitErrorResponse | SearchResult]:
+) -> Response[ErrorResponse | LimitErrorResponse | SearchQuotaErrorResponse | SearchResult]:
     """Search an index
 
      Execute a search query against an index. Returns the same rich, LLM-oriented result shape for every
     caller — direct API consumer or agent.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -106,7 +119,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ErrorResponse | LimitErrorResponse | SearchResult]
+        Response[ErrorResponse | LimitErrorResponse | SearchQuotaErrorResponse | SearchResult]
     """
 
     kwargs = _get_kwargs(
@@ -128,11 +141,13 @@ def sync(
     *,
     client: AuthenticatedClient | Client,
     body: SearchRequest | Unset = UNSET,
-) -> ErrorResponse | LimitErrorResponse | SearchResult | None:
+) -> ErrorResponse | LimitErrorResponse | SearchQuotaErrorResponse | SearchResult | None:
     """Search an index
 
      Execute a search query against an index. Returns the same rich, LLM-oriented result shape for every
     caller — direct API consumer or agent.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -145,7 +160,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ErrorResponse | LimitErrorResponse | SearchResult
+        ErrorResponse | LimitErrorResponse | SearchQuotaErrorResponse | SearchResult
     """
 
     return sync_detailed(
@@ -162,11 +177,13 @@ async def asyncio_detailed(
     *,
     client: AuthenticatedClient | Client,
     body: SearchRequest | Unset = UNSET,
-) -> Response[ErrorResponse | LimitErrorResponse | SearchResult]:
+) -> Response[ErrorResponse | LimitErrorResponse | SearchQuotaErrorResponse | SearchResult]:
     """Search an index
 
      Execute a search query against an index. Returns the same rich, LLM-oriented result shape for every
     caller — direct API consumer or agent.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -179,7 +196,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[ErrorResponse | LimitErrorResponse | SearchResult]
+        Response[ErrorResponse | LimitErrorResponse | SearchQuotaErrorResponse | SearchResult]
     """
 
     kwargs = _get_kwargs(
@@ -199,11 +216,13 @@ async def asyncio(
     *,
     client: AuthenticatedClient | Client,
     body: SearchRequest | Unset = UNSET,
-) -> ErrorResponse | LimitErrorResponse | SearchResult | None:
+) -> ErrorResponse | LimitErrorResponse | SearchQuotaErrorResponse | SearchResult | None:
     """Search an index
 
      Execute a search query against an index. Returns the same rich, LLM-oriented result shape for every
     caller — direct API consumer or agent.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -216,7 +235,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        ErrorResponse | LimitErrorResponse | SearchResult
+        ErrorResponse | LimitErrorResponse | SearchQuotaErrorResponse | SearchResult
     """
 
     return (

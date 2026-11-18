@@ -55,6 +55,11 @@ def _parse_response(
 
         return response_401
 
+    if response.status_code == 409:
+        response_409 = ErrorResponse.from_dict(response.json())
+
+        return response_409
+
     if client.raise_on_unexpected_status:
         raise errors.UnexpectedStatus(response.status_code, response.content)
     else:
@@ -79,11 +84,14 @@ def sync_detailed(
     client: AuthenticatedClient | Client,
     body: FeedbackRequest | Unset = UNSET,
 ) -> Response[ErrorResponse | MessageResponse]:
-    """Report feedback about a search result
+    """Report feedback about a search result or a whole search
 
-     Report a click, an LLM relevance judgment, or a conversion event, attributed to the same sessionId
-    and customerId a prior search used. Beta: this endpoint's contract may still change. See
-    docs/search-feedback-logging-design.md.
+     Report a click, an LLM relevance judgment, a conversion event, or a judgment of a whole search. Use
+    the same sessionId and customerId as the prior search. Each queryId takes one search_judgment. A
+    second one gets 409. Beta: this endpoint's contract may still change. See docs/search-feedback-
+    logging-design.md.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -119,11 +127,14 @@ def sync(
     client: AuthenticatedClient | Client,
     body: FeedbackRequest | Unset = UNSET,
 ) -> ErrorResponse | MessageResponse | None:
-    """Report feedback about a search result
+    """Report feedback about a search result or a whole search
 
-     Report a click, an LLM relevance judgment, or a conversion event, attributed to the same sessionId
-    and customerId a prior search used. Beta: this endpoint's contract may still change. See
-    docs/search-feedback-logging-design.md.
+     Report a click, an LLM relevance judgment, a conversion event, or a judgment of a whole search. Use
+    the same sessionId and customerId as the prior search. Each queryId takes one search_judgment. A
+    second one gets 409. Beta: this endpoint's contract may still change. See docs/search-feedback-
+    logging-design.md.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -154,11 +165,14 @@ async def asyncio_detailed(
     client: AuthenticatedClient | Client,
     body: FeedbackRequest | Unset = UNSET,
 ) -> Response[ErrorResponse | MessageResponse]:
-    """Report feedback about a search result
+    """Report feedback about a search result or a whole search
 
-     Report a click, an LLM relevance judgment, or a conversion event, attributed to the same sessionId
-    and customerId a prior search used. Beta: this endpoint's contract may still change. See
-    docs/search-feedback-logging-design.md.
+     Report a click, an LLM relevance judgment, a conversion event, or a judgment of a whole search. Use
+    the same sessionId and customerId as the prior search. Each queryId takes one search_judgment. A
+    second one gets 409. Beta: this endpoint's contract may still change. See docs/search-feedback-
+    logging-design.md.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -192,11 +206,14 @@ async def asyncio(
     client: AuthenticatedClient | Client,
     body: FeedbackRequest | Unset = UNSET,
 ) -> ErrorResponse | MessageResponse | None:
-    """Report feedback about a search result
+    """Report feedback about a search result or a whole search
 
-     Report a click, an LLM relevance judgment, or a conversion event, attributed to the same sessionId
-    and customerId a prior search used. Beta: this endpoint's contract may still change. See
-    docs/search-feedback-logging-design.md.
+     Report a click, an LLM relevance judgment, a conversion event, or a judgment of a whole search. Use
+    the same sessionId and customerId as the prior search. Each queryId takes one search_judgment. A
+    second one gets 409. Beta: this endpoint's contract may still change. See docs/search-feedback-
+    logging-design.md.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):

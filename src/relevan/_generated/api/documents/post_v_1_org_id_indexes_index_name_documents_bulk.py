@@ -106,6 +106,8 @@ def sync_detailed(
      Ingest up to 1000 documents in a single request. If any document fails mapping validation, the
     entire request is rejected (no partial writes). Existing documents with matching IDs are upserted.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -151,6 +153,8 @@ def sync(
      Ingest up to 1000 documents in a single request. If any document fails mapping validation, the
     entire request is rejected (no partial writes). Existing documents with matching IDs are upserted.
 
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
+
     Args:
         org_id (str):
         index_name (str): URL-safe index name (lowercase alphanumeric + hyphens, unique within
@@ -186,6 +190,8 @@ async def asyncio_detailed(
 
      Ingest up to 1000 documents in a single request. If any document fails mapping validation, the
     entire request is rejected (no partial writes). Existing documents with matching IDs are upserted.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):
@@ -229,6 +235,8 @@ async def asyncio(
 
      Ingest up to 1000 documents in a single request. If any document fails mapping validation, the
     entire request is rejected (no partial writes). Existing documents with matching IDs are upserted.
+
+    Permission: `write`. Only a write API key can call this route. A read API key gets 403.
 
     Args:
         org_id (str):

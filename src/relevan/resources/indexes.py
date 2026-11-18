@@ -9,13 +9,15 @@ from .._generated.api.indexes import (
 )
 from .._generated.client import AuthenticatedClient
 from .._generated.models.create_index import CreateIndex
+from .._generated.models.created_index import CreatedIndex
 from .._generated.models.index import Index
+from .._generated.models.index_detail import IndexDetail
 from .._generated.models.message_response import MessageResponse
 from .._generated.models.update_index import UpdateIndex
 from .._generated.types import UNSET, Unset
 from .._unwrap import unwrap, unwrap_list
 
-__all__ = ["AsyncIndexes", "Index", "Indexes"]
+__all__ = ["AsyncIndexes", "CreatedIndex", "Index", "IndexDetail", "Indexes"]
 
 
 class Indexes:
@@ -40,17 +42,20 @@ class Indexes:
         )
         return unwrap_list(response, item_type=Index, endpoint="indexes.list")
 
-    def get(self, org_id: str, index_name: str) -> Index:
+    def get(self, org_id: str, index_name: str) -> IndexDetail:
         """Get one index by name.
 
         Args:
             org_id: The organization's id or slug.
             index_name: The index's URL-safe name.
+
+        Returns:
+            The index, with its document counts and whether it is ready to search.
         """
         response = get_v_1_org_id_indexes_index_name.sync_detailed(
             org_id, index_name, client=self._client
         )
-        return unwrap(response, success_type=Index, endpoint="indexes.get")
+        return unwrap(response, success_type=IndexDetail, endpoint="indexes.get")
 
     def create(
         self,
@@ -59,7 +64,7 @@ class Indexes:
         name: str,
         display_name: str | Unset = UNSET,
         description: str | Unset = UNSET,
-    ) -> Index:
+    ) -> CreatedIndex:
         """Create a new index.
 
         Args:
@@ -70,7 +75,7 @@ class Indexes:
         """
         body = CreateIndex(name=name, display_name=display_name, description=description)
         response = post_v_1_org_id_indexes.sync_detailed(org_id, client=self._client, body=body)
-        return unwrap(response, success_type=Index, endpoint="indexes.create")
+        return unwrap(response, success_type=CreatedIndex, endpoint="indexes.create")
 
     def update(
         self,
@@ -108,12 +113,12 @@ class AsyncIndexes:
         )
         return unwrap_list(response, item_type=Index, endpoint="indexes.list")
 
-    async def get(self, org_id: str, index_name: str) -> Index:
+    async def get(self, org_id: str, index_name: str) -> IndexDetail:
         """Async version of `Indexes.get`."""
         response = await get_v_1_org_id_indexes_index_name.asyncio_detailed(
             org_id, index_name, client=self._client
         )
-        return unwrap(response, success_type=Index, endpoint="indexes.get")
+        return unwrap(response, success_type=IndexDetail, endpoint="indexes.get")
 
     async def create(
         self,
@@ -122,13 +127,13 @@ class AsyncIndexes:
         name: str,
         display_name: str | Unset = UNSET,
         description: str | Unset = UNSET,
-    ) -> Index:
+    ) -> CreatedIndex:
         """Async version of `Indexes.create`."""
         body = CreateIndex(name=name, display_name=display_name, description=description)
         response = await post_v_1_org_id_indexes.asyncio_detailed(
             org_id, client=self._client, body=body
         )
-        return unwrap(response, success_type=Index, endpoint="indexes.create")
+        return unwrap(response, success_type=CreatedIndex, endpoint="indexes.create")
 
     async def update(
         self,

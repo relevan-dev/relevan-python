@@ -26,6 +26,7 @@ def _search_success_body() -> dict:
             "totalHits": 0,
             "matchedTerms": [],
             "topContributingFields": [],
+            "titleField": None,
             "scoringSummary": "",
             "suggestions": "",
             "searchableFields": [],

@@ -21,7 +21,8 @@ class Document:
     Attributes:
         id (str): Unique document identifier Example: doc_42a1b8d9.
         index_name (str): Index name Example: products.
-        content (DocumentContent): Document content. All fields must be declared in the index mapping.
+        content (DocumentContent): Document content. All fields must be declared in the index mapping. Serialized JSON
+            size capped at 1048576 bytes.
         created_at (datetime.datetime): Document creation timestamp Example: 2024-01-15T10:30:00Z.
         updated_at (datetime.datetime): Document last update timestamp Example: 2024-01-15T10:30:00Z.
     """

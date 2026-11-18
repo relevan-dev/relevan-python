@@ -6,6 +6,7 @@ from typing import Any, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+from ..models.field_mapping_entity_type import FieldMappingEntityType
 from ..models.field_mapping_kind import FieldMappingKind
 from ..models.field_mapping_language import FieldMappingLanguage
 from ..models.field_mapping_use_item import FieldMappingUseItem
@@ -21,11 +22,14 @@ class FieldMapping:
         use (list[FieldMappingUseItem]): Intended query capabilities for this field
         kind (FieldMappingKind | Unset): Field data type (inferred if omitted) Example: text.
         language (FieldMappingLanguage | Unset): Overrides the mapping language for this field Example: english.
+        entity_type (FieldMappingEntityType | Unset): Type of place that the field holds. A query that names a place of
+            this type can match the field. The field must also be filterable, with kind text, id, or array. Example: state.
     """
 
     use: list[FieldMappingUseItem]
     kind: FieldMappingKind | Unset = UNSET
     language: FieldMappingLanguage | Unset = UNSET
+    entity_type: FieldMappingEntityType | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -42,6 +46,10 @@ class FieldMapping:
         if not isinstance(self.language, Unset):
             language = self.language.value
 
+        entity_type: str | Unset = UNSET
+        if not isinstance(self.entity_type, Unset):
+            entity_type = self.entity_type.value
+
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
@@ -53,6 +61,8 @@ class FieldMapping:
             field_dict["kind"] = kind
         if language is not UNSET:
             field_dict["language"] = language
+        if entity_type is not UNSET:
+            field_dict["entityType"] = entity_type
 
         return field_dict
 
@@ -80,10 +90,18 @@ class FieldMapping:
         else:
             language = FieldMappingLanguage(_language)
 
+        _entity_type = d.pop("entityType", UNSET)
+        entity_type: FieldMappingEntityType | Unset
+        if isinstance(_entity_type, Unset):
+            entity_type = UNSET
+        else:
+            entity_type = FieldMappingEntityType(_entity_type)
+
         field_mapping = cls(
             use=use,
             kind=kind,
             language=language,
+            entity_type=entity_type,
         )
 
         field_mapping.additional_properties = d

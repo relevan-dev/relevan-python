@@ -22,6 +22,8 @@ class StorageLimitErrorResponse:
         used_bytes (int): Bytes already stored before this write. Example: 2100000000.
         incoming_bytes (int): Net bytes this write would add. Example: 50000000.
         remaining_bytes (int): Bytes free before this write. Example: 47483648.
+        console_url (str): Console page that shows the organization's storage usage. `GET /v1/{orgId}/usage` returns the
+            same values. Example: https://console.dev.relevan.dev/org_123456789/indexes.
         error (str | Unset): Detailed error information Example: No index found with the provided name.
     """
 
@@ -31,6 +33,7 @@ class StorageLimitErrorResponse:
     used_bytes: int
     incoming_bytes: int
     remaining_bytes: int
+    console_url: str
     error: str | Unset = UNSET
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -47,6 +50,8 @@ class StorageLimitErrorResponse:
 
         remaining_bytes = self.remaining_bytes
 
+        console_url = self.console_url
+
         error = self.error
 
         field_dict: dict[str, Any] = {}
@@ -59,6 +64,7 @@ class StorageLimitErrorResponse:
                 "usedBytes": used_bytes,
                 "incomingBytes": incoming_bytes,
                 "remainingBytes": remaining_bytes,
+                "consoleUrl": console_url,
             }
         )
         if error is not UNSET:
@@ -81,6 +87,8 @@ class StorageLimitErrorResponse:
 
         remaining_bytes = d.pop("remainingBytes")
 
+        console_url = d.pop("consoleUrl")
+
         error = d.pop("error", UNSET)
 
         storage_limit_error_response = cls(
@@ -90,6 +98,7 @@ class StorageLimitErrorResponse:
             used_bytes=used_bytes,
             incoming_bytes=incoming_bytes,
             remaining_bytes=remaining_bytes,
+            console_url=console_url,
             error=error,
         )
 

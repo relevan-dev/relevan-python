@@ -11,7 +11,7 @@ T = TypeVar("T", bound="DocumentContent")
 
 @_attrs_define
 class DocumentContent:
-    """Document content. All fields must be declared in the index mapping."""
+    """Document content. All fields must be declared in the index mapping. Serialized JSON size capped at 1048576 bytes."""
 
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 

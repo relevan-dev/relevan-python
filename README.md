@@ -17,7 +17,6 @@ pip install relevan
 
 ```python
 from relevan import Client
-from relevan._generated.models.feedback_request_action_name import FeedbackRequestActionName
 
 client = Client()  # reads RELEVAN_API_KEY from the environment
 
@@ -32,12 +31,35 @@ for hit in results.results:
 client.beta.send_feedback(
     org.id,
     "products",
-    action_name=FeedbackRequestActionName.CLICK,
+    action_name="click",
     query_id=results.search_context.query_id,
     object_id=results.results[0].id,
     position=0,
 )
 ```
+
+An agent can also grade the whole search once per query with a
+`search_judgment`, with optional per-result grades from 0 (not useful) to 2
+(very useful):
+
+```python
+client.beta.send_feedback(
+    org.id,
+    "products",
+    action_name="search_judgment",
+    query_id=results.search_context.query_id,
+    grade=1,
+    results=[{"object_id": results.results[0].id, "grade": 2, "position": 0}],
+    description="The user wanted over-ear headphones; most results were earbuds.",
+)
+```
+
+Pass `source="eval"` on feedback from a test suite or benchmark run, so it
+stays apart from real traffic.
+
+Before you filter a search, `client.search.filter_values(org.id, "products")`
+lists the values each filterable field holds. `client.usage.get(org.id)` shows
+where the organization stands against its plan's storage cap.
 
 The async client mirrors this exactly:
 
@@ -99,6 +121,16 @@ uv run ruff check .
 uv run mypy src
 uv run pytest
 ```
+
+## Releasing
+
+Releases go to PyPI from the `Publish` workflow through trusted publishing,
+so the repository stores no PyPI token.
+
+1. Set `version` in `pyproject.toml` and add a `CHANGELOG.md` section for it.
+2. Merge to `main`.
+3. Tag the merge commit `v<version>` and push the tag. The workflow fails
+   if the tag and `pyproject.toml` disagree.
 
 ## License
 

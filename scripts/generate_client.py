@@ -106,10 +106,9 @@ def main() -> int:
     try:
         result = subprocess.run(
             [
-                "uvx",
-                "--from",
-                "openapi-python-client",
-                "openapi-python-client",
+                sys.executable,
+                "-m",
+                "openapi_python_client",
                 "generate",
                 "--path",
                 str(tmp_path),

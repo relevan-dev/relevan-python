@@ -75,6 +75,8 @@ def sync_detailed(
 
      Retrieve a specific active document by ID from an index.
 
+    Permission: `read`. A read API key or a write API key can call this route.
+
     Args:
         org_id (str):
         index_name (str):
@@ -112,6 +114,8 @@ def sync(
 
      Retrieve a specific active document by ID from an index.
 
+    Permission: `read`. A read API key or a write API key can call this route.
+
     Args:
         org_id (str):
         index_name (str):
@@ -143,6 +147,8 @@ async def asyncio_detailed(
     """Get a single document
 
      Retrieve a specific active document by ID from an index.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):
@@ -178,6 +184,8 @@ async def asyncio(
     """Get a single document
 
      Retrieve a specific active document by ID from an index.
+
+    Permission: `read`. A read API key or a write API key can call this route.
 
     Args:
         org_id (str):

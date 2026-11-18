@@ -21,6 +21,9 @@ class Index:
         display_name (None | str): Display name shown in the UI Example: Product Catalog.
         description (None | str): Index description Example: Product catalog index.
         status (IndexStatus): Current index lifecycle status Example: ready.
+        ready_at (None | str): The first time the index status became ready. Null if it was never ready. Example:
+            2024-01-15T10:31:12.000Z.
+        failed_at (None | str): The first time the index status became failed. Null if it never failed.
         created_at (str): Index creation timestamp Example: 2024-01-15T10:30:00.000Z.
         updated_at (str): Last update timestamp Example: 2024-01-15T10:30:00.000Z.
     """
@@ -31,6 +34,8 @@ class Index:
     display_name: str | None
     description: str | None
     status: IndexStatus
+    ready_at: str | None
+    failed_at: str | None
     created_at: str
     updated_at: str
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
@@ -50,6 +55,12 @@ class Index:
 
         status = self.status.value
 
+        ready_at: str | None
+        ready_at = self.ready_at
+
+        failed_at: str | None
+        failed_at = self.failed_at
+
         created_at = self.created_at
 
         updated_at = self.updated_at
@@ -64,6 +75,8 @@ class Index:
                 "displayName": display_name,
                 "description": description,
                 "status": status,
+                "readyAt": ready_at,
+                "failedAt": failed_at,
                 "createdAt": created_at,
                 "updatedAt": updated_at,
             }
@@ -96,6 +109,20 @@ class Index:
 
         status = IndexStatus(d.pop("status"))
 
+        def _parse_ready_at(data: object) -> str | None:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        ready_at = _parse_ready_at(d.pop("readyAt"))
+
+        def _parse_failed_at(data: object) -> str | None:
+            if data is None:
+                return data
+            return cast(None | str, data)
+
+        failed_at = _parse_failed_at(d.pop("failedAt"))
+
         created_at = d.pop("createdAt")
 
         updated_at = d.pop("updatedAt")
@@ -107,6 +134,8 @@ class Index:
             display_name=display_name,
             description=description,
             status=status,
+            ready_at=ready_at,
+            failed_at=failed_at,
             created_at=created_at,
             updated_at=updated_at,
         )
