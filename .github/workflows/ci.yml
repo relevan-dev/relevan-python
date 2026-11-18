@@ -8,15 +8,27 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
         with:
-          fetch-depth: 0 # hatch-vcs needs tag history to compute the version
-      - uses: astral-sh/setup-uv@v3
-        with:
-          python-version: "3.10"
-      - run: uv sync --extra dev
+          python-version: ${{ matrix.python-version }}
+      - run: uv sync --locked --extra dev
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run mypy src
       - run: uv run pytest
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.10"
+      - run: uv build
+      - run: uvx twine check --strict dist/*

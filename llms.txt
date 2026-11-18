@@ -4,7 +4,7 @@
 
 ## Reference
 
-- [README](https://github.com/relevan/relevan-python/blob/main/README.md): install, quickstart, auth, rate limits, beta endpoints.
+- [README](https://github.com/relevan-dev/relevan-python/blob/main/README.md): install, quickstart, auth, rate limits, beta endpoints.
 - Every public method carries a full docstring (Args/Returns/Raises/Example) — introspect with `help(client.search.search)` rather than guessing signatures.
 - [Relevan API's own llms.txt](https://api.relevan.dev/llms.txt): the underlying HTTP API this client wraps, including why sending feedback after a search matters.
 
