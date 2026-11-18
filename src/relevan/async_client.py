@@ -5,6 +5,7 @@ import httpx
 from ._auth import mask_api_key, resolve_api_key
 from ._generated.client import AuthenticatedClient
 from ._rate_limit import DEFAULT_MAX_RETRIES, RetryingAsyncTransport
+from ._unwrap import raise_for_error_status_async
 from .resources.beta import AsyncBeta
 from .resources.documents import AsyncDocuments
 from .resources.indexes import AsyncIndexes
@@ -62,6 +63,7 @@ class AsyncClient:
                 transport=RetryingAsyncTransport(
                     httpx.AsyncHTTPTransport(), max_retries=max_retries
                 ),
+                event_hooks={"response": [raise_for_error_status_async]},
             )
         )
         self._generated = generated

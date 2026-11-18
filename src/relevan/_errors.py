@@ -1,8 +1,16 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 
 class RelevanError(Exception):
-    """Base class for every error this package raises."""
+    """Base class for every error this package raises.
+
+    Attributes:
+        headers: The headers of the error response, when the error came from one.
+    """
+
+    headers: Mapping[str, str] | None = None
 
 
 class RelevanAuthError(RelevanError):

@@ -1,4 +1,5 @@
 import httpx
+import pytest
 import respx
 
 from relevan import Client
@@ -82,3 +83,27 @@ def test_search_exposes_rate_limit_headers_on_success() -> None:
 
     assert client.search.last_rate_limit is not None
     assert client.search.last_rate_limit.remaining == 59
+
+
+@respx.mock
+def test_search_sets_rate_limit_snapshot_when_retries_are_exhausted() -> None:
+    respx.post(f"{BASE_URL}/v1/org-1/indexes/products/search").mock(
+        return_value=httpx.Response(
+            429,
+            json=_limit_error_body(),
+            headers={
+                "Retry-After": "0",
+                "RateLimit-Limit": "60",
+                "RateLimit-Remaining": "0",
+                "RateLimit-Reset": "12",
+            },
+        )
+    )
+    client = Client(api_key="relevan_test", base_url=BASE_URL, max_retries=0)
+
+    with pytest.raises(RelevanRateLimitError):
+        client.search.search("org-1", "products", query="tetra")
+
+    assert client.search.last_rate_limit is not None
+    assert client.search.last_rate_limit.remaining == 0
+    assert client.search.last_rate_limit.reset_seconds == 12

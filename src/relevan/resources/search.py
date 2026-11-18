@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from .._errors import RelevanError
 from .._generated.api.search import (
     post_v_1_org_id_indexes_index_name_filter_values,
     post_v_1_org_id_indexes_index_name_search,
@@ -114,9 +115,13 @@ class Search:
         body = _search_request(
             query, filters, boost, offset, size, session_id, customer_id, partition, routing
         )
-        response = post_v_1_org_id_indexes_index_name_search.sync_detailed(
-            org_id, index_name, client=self._client, body=body
-        )
+        try:
+            response = post_v_1_org_id_indexes_index_name_search.sync_detailed(
+                org_id, index_name, client=self._client, body=body
+            )
+        except RelevanError as error:
+            self.last_rate_limit = parse_rate_limit(error.headers or {})
+            raise
         self.last_rate_limit = parse_rate_limit(response.headers)
         return unwrap(response, success_type=SearchResult, endpoint="search.search")
 
@@ -154,9 +159,13 @@ class Search:
         body = FilterValuesRequest(
             fields=fields, size=size, filters=filters, partition=partition, routing=routing
         )
-        response = post_v_1_org_id_indexes_index_name_filter_values.sync_detailed(
-            org_id, index_name, client=self._client, body=body
-        )
+        try:
+            response = post_v_1_org_id_indexes_index_name_filter_values.sync_detailed(
+                org_id, index_name, client=self._client, body=body
+            )
+        except RelevanError as error:
+            self.last_rate_limit = parse_rate_limit(error.headers or {})
+            raise
         self.last_rate_limit = parse_rate_limit(response.headers)
         return unwrap(response, success_type=FilterValuesResult, endpoint="search.filter_values")
 
@@ -185,9 +194,13 @@ class AsyncSearch:
         body = _search_request(
             query, filters, boost, offset, size, session_id, customer_id, partition, routing
         )
-        response = await post_v_1_org_id_indexes_index_name_search.asyncio_detailed(
-            org_id, index_name, client=self._client, body=body
-        )
+        try:
+            response = await post_v_1_org_id_indexes_index_name_search.asyncio_detailed(
+                org_id, index_name, client=self._client, body=body
+            )
+        except RelevanError as error:
+            self.last_rate_limit = parse_rate_limit(error.headers or {})
+            raise
         self.last_rate_limit = parse_rate_limit(response.headers)
         return unwrap(response, success_type=SearchResult, endpoint="search.search")
 
@@ -206,8 +219,12 @@ class AsyncSearch:
         body = FilterValuesRequest(
             fields=fields, size=size, filters=filters, partition=partition, routing=routing
         )
-        response = await post_v_1_org_id_indexes_index_name_filter_values.asyncio_detailed(
-            org_id, index_name, client=self._client, body=body
-        )
+        try:
+            response = await post_v_1_org_id_indexes_index_name_filter_values.asyncio_detailed(
+                org_id, index_name, client=self._client, body=body
+            )
+        except RelevanError as error:
+            self.last_rate_limit = parse_rate_limit(error.headers or {})
+            raise
         self.last_rate_limit = parse_rate_limit(response.headers)
         return unwrap(response, success_type=FilterValuesResult, endpoint="search.filter_values")
