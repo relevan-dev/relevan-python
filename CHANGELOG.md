@@ -4,6 +4,10 @@ All notable changes to this project are documented in this file.
 
 ## Unreleased
 
+- Each request sends `X-Relevan-Integration: python/<version>`, so Relevan can
+  count the search and feedback traffic of this client. Pass
+  `Client(integration="<name>/<version>")` or the same argument to
+  `AsyncClient` to send the name of the library built on it instead.
 - Every 4xx or 5xx response raises a typed error (`RelevanAuthError`,
   `RelevanRateLimitError`, or `RelevanAPIError`), also when the body has no
   `message`, is not JSON, or has a status the spec does not document. Before,

@@ -4,6 +4,7 @@ import httpx
 
 from ._auth import mask_api_key, resolve_api_key
 from ._generated.client import AuthenticatedClient
+from ._integration import INTEGRATION_HEADER, resolve_integration
 from ._rate_limit import DEFAULT_MAX_RETRIES, RetryingTransport
 from ._unwrap import raise_for_error_status
 from .resources.beta import Beta
@@ -30,6 +31,10 @@ class Client:
         timeout: Per-request timeout, in seconds.
         max_retries: How many times to retry a `429` response, honoring the
             server's `Retry-After` header, before raising `RelevanRateLimitError`.
+        integration: The `X-Relevan-Integration` header that every request
+            sends, as `<name>/<version>`. Defaults to `python/<version>`. A
+            library built on this client passes its own name, for example
+            `"hermes/0.1.0"`, so Relevan counts its traffic apart.
 
     Example:
         >>> client = Client()
@@ -44,6 +49,7 @@ class Client:
         base_url: str = DEFAULT_BASE_URL,
         timeout: float = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
+        integration: str | None = None,
     ) -> None:
         self._api_key = resolve_api_key(api_key)
         self._base_url = base_url
@@ -58,7 +64,10 @@ class Client:
         generated.set_httpx_client(
             httpx.Client(
                 base_url=base_url,
-                headers={"x-api-key": self._api_key},
+                headers={
+                    "x-api-key": self._api_key,
+                    INTEGRATION_HEADER: resolve_integration(integration),
+                },
                 timeout=timeout,
                 transport=RetryingTransport(httpx.HTTPTransport(), max_retries=max_retries),
                 event_hooks={"response": [raise_for_error_status]},
