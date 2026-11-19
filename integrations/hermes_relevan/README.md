@@ -36,9 +36,14 @@ Subagents and cron runs send no feedback and do not get the
 ## Install
 
 ```bash
-hermes plugins install relevan
+hermes plugins install relevan-dev/relevan-python/integrations/hermes_relevan
 hermes memory setup        # pick relevan, paste an API key, name the index
 ```
+
+This installs the plugin from this repository's `main` branch. Add
+`--ref <commit sha>` to install one exact commit. Once the plugin is listed in
+the Hermes plugin catalog, `hermes plugins install relevan` installs the
+reviewed commit instead.
 
 Create an API key in the [Relevan console](https://console.relevan.dev). A
 read key can search and send feedback. Loading a preset needs a write key.
