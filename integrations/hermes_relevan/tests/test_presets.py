@@ -125,3 +125,10 @@ def test_ingest_creates_maps_and_batches() -> None:
         ("bulk", 500),
         ("bulk", 200),
     ]
+
+
+def test_csv_keeps_line_breaks_inside_quoted_fields(tmp_path: Path) -> None:
+    csv_file = tmp_path / "products.csv"
+    csv_file.write_text('sku,description\nA-1,"waterproof\nshell"\n', encoding="utf-8")
+    ((_, content),) = list(load_product_file(csv_file))
+    assert content["description"] == "waterproof\nshell"

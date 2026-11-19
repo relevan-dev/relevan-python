@@ -228,14 +228,15 @@ def load_product_file(path: Path) -> Iterator[Document]:
     Columns outside the preset mapping are dropped, because Relevan rejects a
     field the mapping does not declare.
     """
-    text = path.read_text(encoding="utf-8")
     rows: list[dict[str, Any]]
     if path.suffix.lower() == ".csv":
-        rows = list(csv.DictReader(text.splitlines()))
+        with path.open(encoding="utf-8", newline="") as file:
+            rows = list(csv.DictReader(file))
     elif path.suffix.lower() in {".jsonl", ".ndjson"}:
-        rows = [json.loads(line) for line in text.splitlines() if line.strip()]
+        lines = path.read_text(encoding="utf-8").splitlines()
+        rows = [json.loads(line) for line in lines if line.strip()]
     else:
-        rows = json.loads(text)
+        rows = json.loads(path.read_text(encoding="utf-8"))
     for row in rows:
         key = str(row.get("id") or row.get("sku") or "")
         if not key:
