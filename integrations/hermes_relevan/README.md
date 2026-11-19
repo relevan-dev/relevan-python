@@ -97,12 +97,14 @@ contract may change.
 
 ```bash
 cd integrations/hermes_relevan
-uv run --no-project --with 'relevan==0.1.0' --with pytest --with respx pytest
+uv run --no-project --with ../.. --with pytest --with respx pytest
 hermes plugins validate . --install-deps
 ```
 
-The tests stub the three Hermes modules the plugin imports, so they run
-without Hermes installed.
+The tests run against the client in this checkout (`--with ../..`), and
+stub the three Hermes modules the plugin imports, so they run without Hermes
+installed. The plugin needs relevan 0.2.0 or later, the first release with
+the `integration=` option.
 
 ## License
 

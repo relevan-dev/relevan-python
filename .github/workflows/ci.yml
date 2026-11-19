@@ -37,7 +37,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
-      - run: uv run --no-project --with 'relevan==0.1.0' --with pytest --with respx pytest
+      - run: uv run --no-project --with ../.. --with pytest --with respx pytest
 
   package:
     runs-on: ubuntu-latest
