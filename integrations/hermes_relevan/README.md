@@ -25,7 +25,13 @@ A result counts as used when the reply cites its id or names its title (grade
 shared by most other results. A result marked through `relevan_feedback` gets
 no second, automatic event.
 
-Subagents and cron runs send no automatic feedback.
+Each result shows its title, then its other fields as `name: value`, so a
+product's price and stock reach the model. A recall that takes longer than
+6 seconds is dropped: Hermes stops waiting for it at 8 seconds, so its
+results never reach the model and get no feedback.
+
+Subagents and cron runs send no feedback and do not get the
+`relevan_feedback` tool.
 
 ## Install
 

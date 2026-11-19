@@ -95,7 +95,7 @@ def test_prefetch_recalls_and_sync_turn_sends_llm_judgment(
     block = provider.prefetch("how are my VMs backed up?", session_id="hermes-session")
 
     assert 'query_id="q-1"' in block
-    assert "[obsidian:proxmox-1] Proxmox backup plan: Nightly vzdump" in block
+    assert "[obsidian:proxmox-1] Proxmox backup plan — body: Nightly vzdump" in block
     status = provider.recall_status()
     assert status is not None
     assert status.count == 2
@@ -202,4 +202,65 @@ def test_subagents_send_no_implicit_feedback(
     with respx.mock(assert_all_called=False) as mock:
         feedback = mock.post(url__regex=r".*/feedback").mock(return_value=httpx.Response(202))
         instance.sync_turn("q", "a", session_id="s")
+    assert feedback.calls.call_count == 0
+
+
+@respx.mock
+def test_recall_shows_numbers_booleans_and_lists_by_name(provider: RelevanMemoryProvider) -> None:
+    body = _search_body("q-5")
+    body["results"] = [
+        {
+            **_hit("product:cl-500", "Rain shell jacket", "Three-layer waterproof shell."),
+            "document": {
+                "title": "Rain shell jacket",
+                "description": "Three-layer waterproof shell with pit zips.",
+                "price": 249.0,
+                "in_stock": True,
+                "tags": ["waterproof", "jacket"],
+            },
+        }
+    ]
+    respx.post(SEARCH_URL).mock(return_value=httpx.Response(200, json=body))
+
+    block = provider.prefetch("rain jacket", session_id="hermes-session")
+
+    assert (
+        "[product:cl-500] Rain shell jacket — description: Three-layer waterproof shell with "
+        "pit zips.; price: 249.0; in_stock: yes; tags: waterproof, jacket"
+    ) in block
+
+
+@respx.mock
+def test_a_recall_slower_than_the_budget_is_dropped(
+    provider: RelevanMemoryProvider, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    respx.post(SEARCH_URL).mock(return_value=httpx.Response(200, json=_search_body("q-6")))
+    feedback = respx.post(FEEDBACK_URL).mock(return_value=ACCEPTED)
+    clock = iter([100.0, 107.0])
+    monkeypatch.setattr("hermes_relevan.provider.time.monotonic", lambda: next(clock))
+
+    assert provider.prefetch("backups", session_id="hermes-session") == ""
+    assert provider.recall_status() is None
+    provider.sync_turn("backups", "[obsidian:proxmox-1] runs nightly.", session_id="hermes-session")
+    provider.shutdown()
+
+    assert feedback.calls.call_count == 0
+
+
+def test_non_primary_agents_get_no_feedback_tool(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("RELEVAN_API_KEY", "relevan_test_key")
+    instance = RelevanMemoryProvider()
+    instance.initialize("s", hermes_home=str(tmp_path), agent_context="cron")
+
+    assert [schema["name"] for schema in instance.get_tool_schemas()] == ["relevan_search"]
+    with respx.mock(assert_all_called=False) as mock:
+        feedback = mock.post(url__regex=r".*/feedback").mock(return_value=ACCEPTED)
+        result = json.loads(
+            instance.handle_tool_call(
+                "relevan_feedback", {"query_id": "q", "object_id": "o", "action": "helpful"}
+            )
+        )
+    assert "error" in result
     assert feedback.calls.call_count == 0

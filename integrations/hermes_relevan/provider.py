@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import threading
+import time
 import warnings
 from pathlib import Path
 from typing import Any
@@ -28,6 +29,8 @@ DEFAULTS: dict[str, Any] = {
     "source": "production",
 }
 SNIPPET_CHARS = 600
+SHORT_FIELD_CHARS = 80
+PREFETCH_BUDGET_S = 6.0
 MAX_RECALLS_PER_TURN = 8
 
 SYSTEM_PROMPT = """# Relevan search memory
@@ -76,14 +79,24 @@ FEEDBACK_SCHEMA = {
 }
 
 
+def _field_value(value: Any) -> str:
+    if isinstance(value, bool):
+        return "yes" if value else "no"
+    if isinstance(value, list):
+        return ", ".join(_field_value(item) for item in value if not isinstance(item, (dict, list)))
+    return " ".join(str(value).split())
+
+
 def _hit_text(document: dict[str, Any], title_field: str | None) -> tuple[str, str]:
+    """The title, and the other fields as `name: value`, short fields before long text."""
     title = str(document.get(title_field, "")) if title_field else ""
-    parts = [
-        str(value)
+    fields = [
+        (key, _field_value(value))
         for key, value in document.items()
-        if key != title_field and isinstance(value, str) and value.strip()
+        if key != title_field and value not in (None, "", []) and not isinstance(value, dict)
     ]
-    return title, " ".join(" ".join(parts).split())[:SNIPPET_CHARS]
+    fields.sort(key=lambda field: len(field[1]) > SHORT_FIELD_CHARS)
+    return title, "; ".join(f"{key}: {value}" for key, value in fields if value)[:SNIPPET_CHARS]
 
 
 class _Search:
@@ -151,7 +164,9 @@ class RelevanMemoryProvider(MemoryProvider):
         self._org_id = str(self._config["org_id"] or "")
         self._agent_context = kwargs.get("agent_context", "primary")
         self._client = make_client(
-            get_secret(API_KEY_ENV) or "", base_url=str(self._config["base_url"])
+            get_secret(API_KEY_ENV) or "",
+            base_url=str(self._config["base_url"]),
+            timeout=PREFETCH_BUDGET_S - 1,
         )
 
     def on_session_switch(self, new_session_id: str, **kwargs: Any) -> None:
@@ -181,28 +196,39 @@ class RelevanMemoryProvider(MemoryProvider):
         for position, hit in enumerate(result.results):
             title, text = _hit_text(hit.document.to_dict(), title_field)
             hits.append(RecalledHit(hit.id, position, title, text))
-        search = _Search(query, context.query_id, hits)
+        return _Search(query, context.query_id, hits)
+
+    def _record(self, search: _Search, session_id: str) -> None:
+        """Keep a search whose results the model saw, for this turn's feedback check."""
         with self._lock:
             searches = self._turn_searches.setdefault(session_id or self._session_id, [])
             searches.append(search)
             del searches[:-MAX_RECALLS_PER_TURN]
-        return search
 
     def prefetch(self, query: str, *, session_id: str = "") -> str:
         self._last_count = None
         if not self._client or not self._config["index"] or not query.strip():
             return ""
+        started = time.monotonic()
         try:
             search = self._search(query, int(self._config["recall_size"]), session_id)
         except Exception as exc:
             logger.warning("Relevan recall failed: %s", exc)
             return ""
+        if time.monotonic() - started > PREFETCH_BUDGET_S:
+            logger.warning(
+                "Relevan recall took over %.0f s; Hermes has moved on", PREFETCH_BUDGET_S
+            )
+            return ""
+        self._record(search, session_id)
         self._last_count = len(search.hits)
         if not search.hits:
             return ""
         lines = [f'<relevan-recall index="{self._config["index"]}" query_id="{search.query_id}">']
         for hit in search.hits:
-            lines.append(f"[{hit.object_id}] {hit.title}: {hit.text}".strip())
+            lines.append(
+                " — ".join(part for part in (f"[{hit.object_id}] {hit.title}", hit.text) if part)
+            )
         lines.append("</relevan-recall>")
         return "\n".join(lines)
 
@@ -276,6 +302,8 @@ class RelevanMemoryProvider(MemoryProvider):
             )
 
     def get_tool_schemas(self) -> list[dict[str, Any]]:
+        if self._agent_context != "primary":
+            return [SEARCH_SCHEMA]
         return [SEARCH_SCHEMA, FEEDBACK_SCHEMA]
 
     def handle_tool_call(self, tool_name: str, args: dict[str, Any], **kwargs: Any) -> str:
@@ -294,6 +322,7 @@ class RelevanMemoryProvider(MemoryProvider):
             return json.dumps({"error": "query is required"})
         size = max(1, min(20, int(args.get("limit") or 5)))
         search = self._search(query, size, self._session_id)
+        self._record(search, self._session_id)
         return json.dumps(
             {
                 "query_id": search.query_id,
@@ -306,6 +335,8 @@ class RelevanMemoryProvider(MemoryProvider):
         )
 
     def _tool_feedback(self, args: dict[str, Any]) -> str:
+        if self._agent_context != "primary":
+            return json.dumps({"error": "Feedback is only sent from the primary agent"})
         query_id = str(args.get("query_id") or "")
         object_id = str(args.get("object_id") or "")
         action = args.get("action")
