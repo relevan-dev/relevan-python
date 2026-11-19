@@ -1,0 +1,335 @@
+[
+  {
+    "sku": "TR-100",
+    "title": "Trailblazer 45L hiking backpack",
+    "description": "45 litre backpack with an adjustable back system, rain cover and hip belt pockets.",
+    "brand": "Northpeak",
+    "category": "backpacks",
+    "price": 149,
+    "in_stock": true,
+    "tags": [
+      "hiking",
+      "multi-day"
+    ],
+    "url": "https://shop.example.com/p/tr-100"
+  },
+  {
+    "sku": "TR-101",
+    "title": "Daypack 22L",
+    "description": "Light 22 litre daypack with a hydration sleeve and a padded laptop pocket.",
+    "brand": "Northpeak",
+    "category": "backpacks",
+    "price": 69,
+    "in_stock": true,
+    "tags": [
+      "hiking",
+      "commute"
+    ],
+    "url": "https://shop.example.com/p/tr-101"
+  },
+  {
+    "sku": "TR-102",
+    "title": "Ultralight 30L fastpack",
+    "description": "Frameless 30 litre pack at 610 g for fast hiking and trail running.",
+    "brand": "Ridgeline",
+    "category": "backpacks",
+    "price": 129,
+    "in_stock": false,
+    "tags": [
+      "ultralight",
+      "running"
+    ],
+    "url": "https://shop.example.com/p/tr-102"
+  },
+  {
+    "sku": "SH-200",
+    "title": "Trail Runner 2 waterproof shoe",
+    "description": "Trail running shoe with a waterproof membrane and a 4 mm lug outsole.",
+    "brand": "Northpeak",
+    "category": "footwear",
+    "price": 129.99,
+    "in_stock": true,
+    "tags": [
+      "running",
+      "waterproof"
+    ],
+    "url": "https://shop.example.com/p/sh-200"
+  },
+  {
+    "sku": "SH-201",
+    "title": "Summit GTX mid boot",
+    "description": "Mid-cut hiking boot with a Gore-Tex liner and a Vibram sole for rocky ground.",
+    "brand": "Alpenwerk",
+    "category": "footwear",
+    "price": 219,
+    "in_stock": true,
+    "tags": [
+      "hiking",
+      "waterproof",
+      "boots"
+    ],
+    "url": "https://shop.example.com/p/sh-201"
+  },
+  {
+    "sku": "SH-202",
+    "title": "Camp slip-on",
+    "description": "Packable camp shoe with a collapsible heel, 290 g a pair.",
+    "brand": "Ridgeline",
+    "category": "footwear",
+    "price": 49,
+    "in_stock": true,
+    "tags": [
+      "camp"
+    ],
+    "url": "https://shop.example.com/p/sh-202"
+  },
+  {
+    "sku": "SL-300",
+    "title": "Down sleeping bag -5C",
+    "description": "800 fill power down bag, comfort limit -5 C, 980 g, with a compression sack.",
+    "brand": "Alpenwerk",
+    "category": "sleeping",
+    "price": 389,
+    "in_stock": true,
+    "tags": [
+      "winter",
+      "down"
+    ],
+    "url": "https://shop.example.com/p/sl-300"
+  },
+  {
+    "sku": "SL-301",
+    "title": "Synthetic sleeping bag 5C",
+    "description": "Synthetic summer bag, comfort limit 5 C, keeps warm when damp.",
+    "brand": "Northpeak",
+    "category": "sleeping",
+    "price": 99,
+    "in_stock": true,
+    "tags": [
+      "summer",
+      "synthetic"
+    ],
+    "url": "https://shop.example.com/p/sl-301"
+  },
+  {
+    "sku": "SL-302",
+    "title": "Insulated sleeping pad R4.2",
+    "description": "Inflatable pad with R-value 4.2 for three-season camping, 480 g.",
+    "brand": "Ridgeline",
+    "category": "sleeping",
+    "price": 159,
+    "in_stock": true,
+    "tags": [
+      "insulated",
+      "three-season"
+    ],
+    "url": "https://shop.example.com/p/sl-302"
+  },
+  {
+    "sku": "TE-400",
+    "title": "Two-person backpacking tent",
+    "description": "Freestanding two-person tent at 1.6 kg with two doors and two vestibules.",
+    "brand": "Ridgeline",
+    "category": "tents",
+    "price": 349,
+    "in_stock": true,
+    "tags": [
+      "backpacking",
+      "two-person"
+    ],
+    "url": "https://shop.example.com/p/te-400"
+  },
+  {
+    "sku": "TE-401",
+    "title": "Four-season mountaineering tent",
+    "description": "Geodesic tent for snow loads and high wind, 3.1 kg.",
+    "brand": "Alpenwerk",
+    "category": "tents",
+    "price": 699,
+    "in_stock": false,
+    "tags": [
+      "winter",
+      "mountaineering"
+    ],
+    "url": "https://shop.example.com/p/te-401"
+  },
+  {
+    "sku": "TE-402",
+    "title": "Tarp shelter 3x3",
+    "description": "Silnylon 3 by 3 metre tarp with 16 tie-outs, 520 g.",
+    "brand": "Ridgeline",
+    "category": "tents",
+    "price": 89,
+    "in_stock": true,
+    "tags": [
+      "ultralight",
+      "tarp"
+    ],
+    "url": "https://shop.example.com/p/te-402"
+  },
+  {
+    "sku": "CL-500",
+    "title": "Rain shell jacket",
+    "description": "Three-layer waterproof shell with pit zips and a helmet-compatible hood.",
+    "brand": "Northpeak",
+    "category": "clothing",
+    "price": 249,
+    "in_stock": true,
+    "tags": [
+      "waterproof",
+      "jacket"
+    ],
+    "url": "https://shop.example.com/p/cl-500"
+  },
+  {
+    "sku": "CL-501",
+    "title": "Merino base layer top",
+    "description": "200 gsm merino long-sleeve base layer that resists odour.",
+    "brand": "Alpenwerk",
+    "category": "clothing",
+    "price": 89,
+    "in_stock": true,
+    "tags": [
+      "merino",
+      "base-layer"
+    ],
+    "url": "https://shop.example.com/p/cl-501"
+  },
+  {
+    "sku": "CL-502",
+    "title": "Down puffy jacket",
+    "description": "Light down jacket with 700 fill power, packs into its own pocket.",
+    "brand": "Northpeak",
+    "category": "clothing",
+    "price": 199,
+    "in_stock": true,
+    "tags": [
+      "down",
+      "insulation"
+    ],
+    "url": "https://shop.example.com/p/cl-502"
+  },
+  {
+    "sku": "CL-503",
+    "title": "Softshell hiking trousers",
+    "description": "Stretch softshell trousers with a water-repellent finish.",
+    "brand": "Alpenwerk",
+    "category": "clothing",
+    "price": 119,
+    "in_stock": true,
+    "tags": [
+      "hiking",
+      "trousers"
+    ],
+    "url": "https://shop.example.com/p/cl-503"
+  },
+  {
+    "sku": "CK-600",
+    "title": "Canister stove",
+    "description": "Compact canister stove that boils 1 litre in 3.5 minutes.",
+    "brand": "Ridgeline",
+    "category": "cooking",
+    "price": 59,
+    "in_stock": true,
+    "tags": [
+      "stove"
+    ],
+    "url": "https://shop.example.com/p/ck-600"
+  },
+  {
+    "sku": "CK-601",
+    "title": "Titanium pot 750 ml",
+    "description": "750 ml titanium pot with a lid and folding handles, 105 g.",
+    "brand": "Ridgeline",
+    "category": "cooking",
+    "price": 45,
+    "in_stock": true,
+    "tags": [
+      "titanium",
+      "ultralight"
+    ],
+    "url": "https://shop.example.com/p/ck-601"
+  },
+  {
+    "sku": "CK-602",
+    "title": "Water filter squeeze",
+    "description": "Hollow-fibre squeeze filter that removes 99.99 percent of bacteria.",
+    "brand": "Northpeak",
+    "category": "cooking",
+    "price": 39,
+    "in_stock": true,
+    "tags": [
+      "water",
+      "filter"
+    ],
+    "url": "https://shop.example.com/p/ck-602"
+  },
+  {
+    "sku": "NA-700",
+    "title": "Headlamp 400 lumen",
+    "description": "Rechargeable 400 lumen headlamp with a red light mode, 75 g.",
+    "brand": "Northpeak",
+    "category": "navigation",
+    "price": 49,
+    "in_stock": true,
+    "tags": [
+      "light",
+      "rechargeable"
+    ],
+    "url": "https://shop.example.com/p/na-700"
+  },
+  {
+    "sku": "NA-701",
+    "title": "GPS watch",
+    "description": "Outdoor GPS watch with topo maps and 14-day battery life.",
+    "brand": "Alpenwerk",
+    "category": "navigation",
+    "price": 399,
+    "in_stock": true,
+    "tags": [
+      "gps",
+      "watch"
+    ],
+    "url": "https://shop.example.com/p/na-701"
+  },
+  {
+    "sku": "NA-702",
+    "title": "Trekking poles carbon",
+    "description": "Folding carbon trekking poles with cork grips, 390 g a pair.",
+    "brand": "Ridgeline",
+    "category": "accessories",
+    "price": 139,
+    "in_stock": true,
+    "tags": [
+      "poles",
+      "carbon"
+    ],
+    "url": "https://shop.example.com/p/na-702"
+  },
+  {
+    "sku": "NA-703",
+    "title": "First aid kit hiker",
+    "description": "First aid kit for two people on trips up to four days.",
+    "brand": "Northpeak",
+    "category": "accessories",
+    "price": 35,
+    "in_stock": true,
+    "tags": [
+      "safety"
+    ],
+    "url": "https://shop.example.com/p/na-703"
+  },
+  {
+    "sku": "NA-704",
+    "title": "Bear canister",
+    "description": "Hard-sided bear-resistant food canister, 7 litres.",
+    "brand": "Ridgeline",
+    "category": "accessories",
+    "price": 79,
+    "in_stock": false,
+    "tags": [
+      "food-storage"
+    ],
+    "url": "https://shop.example.com/p/na-704"
+  }
+]
