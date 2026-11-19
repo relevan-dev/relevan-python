@@ -23,6 +23,22 @@ jobs:
       - run: uv run mypy src
       - run: uv run pytest
 
+  hermes-provider:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.14"]
+    defaults:
+      run:
+        working-directory: integrations/hermes_relevan
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: uv run --no-project --with ../.. --with pytest --with respx pytest
+
   package:
     runs-on: ubuntu-latest
     steps:

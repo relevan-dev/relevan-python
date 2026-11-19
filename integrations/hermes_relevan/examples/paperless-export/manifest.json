@@ -1,0 +1,178 @@
+[
+  {
+    "model": "documents.correspondent",
+    "pk": 1,
+    "fields": {
+      "name": "Allianz"
+    }
+  },
+  {
+    "model": "documents.correspondent",
+    "pk": 2,
+    "fields": {
+      "name": "City Water Utility"
+    }
+  },
+  {
+    "model": "documents.correspondent",
+    "pk": 3,
+    "fields": {
+      "name": "Bosch"
+    }
+  },
+  {
+    "model": "documents.correspondent",
+    "pk": 4,
+    "fields": {
+      "name": "Internal Revenue Service"
+    }
+  },
+  {
+    "model": "documents.documenttype",
+    "pk": 1,
+    "fields": {
+      "name": "Policy"
+    }
+  },
+  {
+    "model": "documents.documenttype",
+    "pk": 2,
+    "fields": {
+      "name": "Invoice"
+    }
+  },
+  {
+    "model": "documents.documenttype",
+    "pk": 3,
+    "fields": {
+      "name": "Warranty"
+    }
+  },
+  {
+    "model": "documents.documenttype",
+    "pk": 4,
+    "fields": {
+      "name": "Tax"
+    }
+  },
+  {
+    "model": "documents.tag",
+    "pk": 1,
+    "fields": {
+      "name": "house"
+    }
+  },
+  {
+    "model": "documents.tag",
+    "pk": 2,
+    "fields": {
+      "name": "insurance"
+    }
+  },
+  {
+    "model": "documents.tag",
+    "pk": 3,
+    "fields": {
+      "name": "appliances"
+    }
+  },
+  {
+    "model": "documents.tag",
+    "pk": 4,
+    "fields": {
+      "name": "taxes"
+    }
+  },
+  {
+    "model": "documents.document",
+    "pk": 11,
+    "fields": {
+      "title": "Home insurance policy 2026",
+      "content": "Allianz home insurance policy number HX-4471-209. Coverage period 1 January 2026 to 31 December 2026. Building cover 450,000 EUR, contents cover 80,000 EUR, excess 250 EUR. Water damage from burst pipes is covered; flood from surface water is excluded. Claims line +49 89 3800 0.",
+      "correspondent": 1,
+      "document_type": 1,
+      "tags": [
+        1,
+        2
+      ],
+      "created": "2026-01-02T00:00:00Z",
+      "added": "2026-01-05T09:12:00Z"
+    },
+    "__exported_file_name__": "2026-01-02 Allianz Home insurance policy 2026.pdf"
+  },
+  {
+    "model": "documents.document",
+    "pk": 12,
+    "fields": {
+      "title": "Water bill September",
+      "content": "City Water Utility invoice 2026-09-3381. Billing period 1 to 30 September 2026. Consumption 9.4 cubic metres. Amount due 41.80 EUR by 15 October 2026. Direct debit from the joint account.",
+      "correspondent": 2,
+      "document_type": 2,
+      "tags": [
+        1
+      ],
+      "created": "2026-10-01T00:00:00Z"
+    },
+    "__exported_file_name__": "2026-10-01 City Water Utility Water bill September.pdf"
+  },
+  {
+    "model": "documents.document",
+    "pk": 13,
+    "fields": {
+      "title": "Dishwasher warranty",
+      "content": "Bosch Serie 6 dishwasher SMS6ZCI42E, serial 0123-554-87. Purchased 3 April 2025. Manufacturer warranty 2 years, extended to 5 years after registration on 10 April 2025. Service hotline 089 69 339 339. Keep the receipt with this certificate.",
+      "correspondent": 3,
+      "document_type": 3,
+      "tags": [
+        1,
+        3
+      ],
+      "created": "2025-04-10T00:00:00Z"
+    },
+    "__exported_file_name__": "2025-04-10 Bosch Dishwasher warranty.pdf"
+  },
+  {
+    "model": "documents.document",
+    "pk": 14,
+    "fields": {
+      "title": "Estimated tax payment Q3",
+      "content": "Form 1040-ES voucher 3. Estimated tax payment of 2,350 USD for the third quarter, due 15 September 2026. Paid by EFTPS on 12 September 2026, confirmation 270955318842.",
+      "correspondent": 4,
+      "document_type": 4,
+      "tags": [
+        4
+      ],
+      "created": "2026-09-12T00:00:00Z"
+    },
+    "__exported_file_name__": "2026-09-12 IRS Estimated tax payment Q3.pdf"
+  },
+  {
+    "model": "documents.document",
+    "pk": 15,
+    "fields": {
+      "title": "Car insurance renewal",
+      "content": "Allianz motor insurance renewal for the Skoda Octavia, policy MX-88120. Premium 612 EUR per year from 1 December 2026. No-claims class SF 9. Breakdown cover included across Europe.",
+      "correspondent": 1,
+      "document_type": 1,
+      "tags": [
+        2
+      ],
+      "created": "2026-11-02T00:00:00Z"
+    },
+    "__exported_file_name__": "2026-11-02 Allianz Car insurance renewal.pdf"
+  },
+  {
+    "model": "documents.document",
+    "pk": 16,
+    "fields": {
+      "title": "Boiler service report",
+      "content": "Annual gas boiler service on 18 October 2026. Flue gas analysis within limits, CO 12 ppm. Pressure topped up to 1.5 bar. Next service due October 2027. Engineer noted the expansion vessel should be checked next year.",
+      "tags": [
+        1,
+        3
+      ],
+      "created": "2026-10-18T00:00:00Z"
+    },
+    "__exported_file_name__": "2026-10-18 Boiler service report.pdf"
+  }
+]

@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented in this file.
 
-## Unreleased
+## 0.2.0 - 2026-11-19
 
 - Each request sends `X-Relevan-Integration: python/<version>`, so Relevan can
   count the search and feedback traffic of this client. Pass
@@ -14,6 +14,12 @@ All notable changes to this project are documented in this file.
   such a body raised `KeyError('message')`, a JSON decode error, or
   `UnexpectedStatus`. Without a `message`, the error message is
   `"<METHOD> <path> failed (<status>)"`.
+- `integrations/hermes_relevan` is a memory provider for Hermes Agent. It
+  searches a Relevan index before each turn, and sends an `llm_judgment`
+  event for each recalled result the reply used. It has `personal-notes`
+  (Obsidian, Paperless-ngx) and `product-catalog` presets. It is a Hermes
+  plugin with its own `pyproject.toml`, not part of the `relevan` package,
+  and it needs relevan 0.2.0 or later.
 
 ## 0.1.0 - 2026-11-18
 
