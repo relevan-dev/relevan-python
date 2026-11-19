@@ -4,7 +4,9 @@ A result counts as used when the reply cites its id or its title, or when the
 reply repeats enough of the result's distinctive words. A distinctive word is a
 word of the text the model saw for that result that is not in the user's
 message and not in most of the other results. So a reply that only echoes the
-question, or that uses words every result shares, does not count.
+question, or that uses words every result shares, does not count. When several
+results match this way, a result that shares fewer than half the words of the
+best match does not count.
 """
 
 from __future__ import annotations
@@ -163,6 +165,7 @@ def used_results(hits: list[RecalledHit], user_text: str, reply: str) -> list[Us
                 counts[word] = counts.get(word, 0) + 1
         common = {word for word, count in counts.items() if count > len(hits) / 2}
     used: list[Usage] = []
+    paraphrased: list[tuple[RecalledHit, int]] = []
     for hit, words in zip(hits, hit_words, strict=True):
         if re.search(rf"(?<![\w-]){re.escape(hit.object_id)}(?![\w-])", reply):
             used.append(Usage(hit, 2, "cited the result id"))
@@ -171,7 +174,13 @@ def used_results(hits: list[RecalledHit], user_text: str, reply: str) -> list[Us
         if len(title) >= MIN_TITLE_LENGTH and f" {title} " in f" {reply_norm} ":
             used.append(Usage(hit, 2, "named the result title"))
             continue
-        shared = (words - query_words - common) & reply_words
-        if len(shared) >= MIN_SHARED_WORDS:
-            used.append(Usage(hit, 1, f"repeated {len(shared)} distinctive words"))
-    return used
+        shared = len((words - query_words - common) & reply_words)
+        if shared >= MIN_SHARED_WORDS:
+            paraphrased.append((hit, shared))
+    best = max((shared for _, shared in paraphrased), default=0)
+    used += [
+        Usage(hit, 1, f"repeated {shared} distinctive words")
+        for hit, shared in paraphrased
+        if shared * 2 >= best
+    ]
+    return sorted(used, key=lambda usage: usage.hit.position)

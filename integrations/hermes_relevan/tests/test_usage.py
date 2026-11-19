@@ -52,3 +52,27 @@ def test_an_unrelated_reply_uses_nothing() -> None:
 def test_an_id_inside_a_longer_id_does_not_count() -> None:
     hits = [RecalledHit("product:a-1", 0, "", "")]
     assert used_results(hits, "q", "See product:a-12 instead.") == []
+
+
+def test_a_weak_paraphrase_next_to_a_strong_one_does_not_count() -> None:
+    hits = [
+        RecalledHit(
+            "paperless:11",
+            0,
+            "Home insurance policy 2026",
+            "Allianz home insurance policy number HX-4471-209. Building cover, excess 250 EUR.",
+        ),
+        RecalledHit(
+            "paperless:15",
+            1,
+            "Car insurance renewal",
+            "Allianz motor insurance renewal for the Skoda Octavia, policy MX-88120. "
+            "Premium 612 EUR.",
+        ),
+    ]
+    reply = (
+        "The Skoda Octavia is insured with Allianz under policy number MX-88120, and the "
+        "motor insurance renewal premium is 612 EUR."
+    )
+    used = used_results(hits, "Which car is insured with Allianz?", reply)
+    assert [(u.hit.object_id, u.grade) for u in used] == [("paperless:15", 1)]
