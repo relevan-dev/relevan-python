@@ -119,8 +119,9 @@ class _Turn:
         self.searches: list[_Search] = []
 
     def matches(self, user_content: str) -> bool:
-        text = " ".join(_IMAGE_MARKER.sub("", user_content).split())
-        return bool(self.message) and self.message == text
+        text = " ".join(user_content.split())
+        stripped = " ".join(_IMAGE_MARKER.sub("", user_content).split())
+        return bool(self.message) and self.message in (text, stripped)
 
 
 class RelevanMemoryProvider(MemoryProvider):
@@ -216,7 +217,9 @@ class RelevanMemoryProvider(MemoryProvider):
     def on_turn_start(self, turn_number: int, message: str, **kwargs: Any) -> None:
         with self._lock:
             turns = self._turns.setdefault(self._session_id, [])
-            turns.append(_Turn(message or ""))
+            turn = _Turn(message or "")
+            turns[:] = [open_turn for open_turn in turns if open_turn.message != turn.message]
+            turns.append(turn)
             del turns[:-MAX_OPEN_TURNS]
 
     def _record(self, search: _Search, session_id: str) -> None:
@@ -237,6 +240,8 @@ class RelevanMemoryProvider(MemoryProvider):
         The ended turn is the oldest open turn whose message equals
         `user_content`, without the image count Hermes puts in front of a
         message with images. Older open turns never got a sync and are dropped.
+        A turn that starts replaces an open turn with the same message, so a
+        resent message after an interrupted turn keeps only the new searches.
         With no match, nothing is judged.
         """
         with self._lock:

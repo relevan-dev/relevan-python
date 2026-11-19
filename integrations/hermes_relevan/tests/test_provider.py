@@ -339,3 +339,48 @@ def test_a_sync_with_images_matches_its_turn(provider: RelevanMemoryProvider) ->
     assert [(b["queryId"], b["objectId"]) for b in _feedback_bodies(feedback)] == [
         ("turn-1", "obsidian:proxmox-1")
     ]
+
+
+@respx.mock
+def test_a_text_message_that_starts_like_an_image_count_matches_its_turn(
+    provider: RelevanMemoryProvider,
+) -> None:
+    respx.post(SEARCH_URL).mock(return_value=httpx.Response(200, json=_search_body("turn-1")))
+    feedback = respx.post(FEEDBACK_URL).mock(return_value=ACCEPTED)
+
+    provider.on_turn_start(1, "[1 image] check this")
+    provider.prefetch("[1 image] check this", session_id="hermes-session")
+    provider.sync_turn(
+        "[1 image] check this", "See [obsidian:proxmox-1].", session_id="hermes-session"
+    )
+    provider.shutdown()
+
+    assert [(b["queryId"], b["objectId"]) for b in _feedback_bodies(feedback)] == [
+        ("turn-1", "obsidian:proxmox-1")
+    ]
+
+
+@respx.mock
+def test_a_resent_message_judges_only_the_new_turns_searches(
+    provider: RelevanMemoryProvider,
+) -> None:
+    respx.post(SEARCH_URL).mock(
+        side_effect=[
+            httpx.Response(200, json=_search_body("turn-1")),
+            httpx.Response(200, json=_search_body("turn-2")),
+        ]
+    )
+    feedback = respx.post(FEEDBACK_URL).mock(return_value=ACCEPTED)
+
+    provider.on_turn_start(1, "list my VM backups")
+    provider.prefetch("list my VM backups", session_id="hermes-session")
+    provider.on_turn_start(2, "list my VM backups")
+    provider.prefetch("list my VM backups", session_id="hermes-session")
+    provider.sync_turn(
+        "list my VM backups", "See [obsidian:proxmox-1].", session_id="hermes-session"
+    )
+    provider.shutdown()
+
+    assert [(b["queryId"], b["objectId"]) for b in _feedback_bodies(feedback)] == [
+        ("turn-2", "obsidian:proxmox-1")
+    ]
