@@ -51,7 +51,14 @@ def test_an_unrelated_reply_uses_nothing() -> None:
 
 def test_an_id_inside_a_longer_id_does_not_count() -> None:
     hits = [RecalledHit("product:a-1", 0, "", "")]
-    assert used_results(hits, "q", "See product:a-12 instead.") == []
+    assert used_results(hits, "q", "See [product:a-12] instead.") == []
+
+
+def test_an_id_counts_only_inside_square_brackets() -> None:
+    hits = [RecalledHit("1", 0, "", ""), RecalledHit("2", 1, "", "")]
+    assert used_results(hits, "q", "I can suggest 1 option, or 2.") == []
+    used = used_results(hits, "q", "Two notes say so [1, 2].")
+    assert [(u.hit.object_id, u.grade) for u in used] == [("1", 2), ("2", 2)]
 
 
 def test_a_weak_paraphrase_next_to_a_strong_one_does_not_count() -> None:

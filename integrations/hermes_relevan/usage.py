@@ -1,6 +1,7 @@
 """Decide which recalled results an assistant reply used.
 
-A result counts as used when the reply cites its id or its title, or when the
+A result counts as used when the reply cites its id in square brackets, as the
+system prompt asks, or names its title, or when the
 reply repeats enough of the result's distinctive words. A distinctive word is a
 word of the text the model saw for that result that is not in the user's
 message and not in most of the other results. So a reply that only echoes the
@@ -167,7 +168,7 @@ def used_results(hits: list[RecalledHit], user_text: str, reply: str) -> list[Us
     used: list[Usage] = []
     paraphrased: list[tuple[RecalledHit, int]] = []
     for hit, words in zip(hits, hit_words, strict=True):
-        if re.search(rf"(?<![\w-]){re.escape(hit.object_id)}(?![\w-])", reply):
+        if re.search(rf"\[[^\]]*(?<![\w:.-]){re.escape(hit.object_id)}(?![\w:.-])[^\]]*\]", reply):
             used.append(Usage(hit, 2, "cited the result id"))
             continue
         title = _normalise(hit.title)
