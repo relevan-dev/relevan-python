@@ -78,6 +78,21 @@ environment variable by default — the same variable used elsewhere for
 this API — or accept it directly: `Client(api_key="relevan_...")`. The key
 is never written to disk or logged, and is masked in `repr(client)`.
 
+## Integration name
+
+Each request sends an `X-Relevan-Integration` header, `python/<version>` by
+default. Relevan records it on search and feedback events, so it can count
+the traffic of each integration. A library built on this client passes its
+own name and version:
+
+```python
+client = Client(integration="hermes/0.1.0")
+```
+
+The value is `<name>/<version>` in lower-case letters, digits, `.`, `_`, `-`
+(and `+` in the version), at most 64 characters. The API ignores a value in
+another form. It is a label, not a credential.
+
 ## Rate limits
 
 Relevan enforces per-organization rate limits. On a `429`, the client
