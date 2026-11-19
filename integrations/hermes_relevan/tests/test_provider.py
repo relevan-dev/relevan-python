@@ -174,6 +174,7 @@ def test_search_tool_results_also_get_implicit_feedback(provider: RelevanMemoryP
     respx.post(SEARCH_URL).mock(return_value=httpx.Response(200, json=_search_body("q-4")))
     feedback = respx.post(FEEDBACK_URL).mock(return_value=ACCEPTED)
 
+    provider.on_turn_start(1, "vpn?")
     result = json.loads(provider.handle_tool_call("relevan_search", {"query": "wireguard"}))
     provider.sync_turn("vpn?", "Wireguard VPN listens on 51820.", session_id="hermes-session")
     provider.shutdown()
@@ -291,4 +292,50 @@ def test_a_late_sync_judges_only_its_own_turn(provider: RelevanMemoryProvider) -
     assert sorted((b["queryId"], b["objectId"]) for b in _feedback_bodies(feedback)) == [
         ("turn-1", "obsidian:proxmox-1"),
         ("turn-2", "obsidian:wireguard-2"),
+    ]
+
+
+@respx.mock
+def test_an_unsynced_turn_cannot_take_a_later_turns_searches(
+    provider: RelevanMemoryProvider,
+) -> None:
+    respx.post(SEARCH_URL).mock(
+        side_effect=[
+            httpx.Response(200, json=_search_body("turn-1")),
+            httpx.Response(200, json=_search_body("turn-2")),
+        ]
+    )
+    feedback = respx.post(FEEDBACK_URL).mock(return_value=ACCEPTED)
+
+    provider.on_turn_start(1, "list my VM backups")
+    provider.prefetch("list my VM backups", session_id="hermes-session")
+    provider.on_turn_start(2, "list my VM backups, and show the schedule")
+    provider.prefetch("list my VM backups, and show the schedule", session_id="hermes-session")
+    provider.sync_turn(
+        "list my VM backups, and show the schedule",
+        "See [obsidian:proxmox-1].",
+        session_id="hermes-session",
+    )
+    provider.sync_turn("yes", "See [obsidian:wireguard-2].", session_id="hermes-session")
+    provider.shutdown()
+
+    assert [(b["queryId"], b["objectId"]) for b in _feedback_bodies(feedback)] == [
+        ("turn-2", "obsidian:proxmox-1")
+    ]
+
+
+@respx.mock
+def test_a_sync_with_images_matches_its_turn(provider: RelevanMemoryProvider) -> None:
+    respx.post(SEARCH_URL).mock(return_value=httpx.Response(200, json=_search_body("turn-1")))
+    feedback = respx.post(FEEDBACK_URL).mock(return_value=ACCEPTED)
+
+    provider.on_turn_start(1, "which VM is this?")
+    provider.prefetch("which VM is this?", session_id="hermes-session")
+    provider.sync_turn(
+        "[1 image] which VM is this?", "That is [obsidian:proxmox-1].", session_id="hermes-session"
+    )
+    provider.shutdown()
+
+    assert [(b["queryId"], b["objectId"]) for b in _feedback_bodies(feedback)] == [
+        ("turn-1", "obsidian:proxmox-1")
     ]

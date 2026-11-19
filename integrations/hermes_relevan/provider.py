@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import threading
 import time
 import warnings
@@ -33,6 +34,7 @@ SHORT_FIELD_CHARS = 80
 PREFETCH_BUDGET_S = 6.0
 MAX_RECALLS_PER_TURN = 8
 MAX_OPEN_TURNS = 4
+_IMAGE_MARKER = re.compile(r"^\[\d+ images?\]")
 
 SYSTEM_PROMPT = """# Relevan search memory
 Relevan searches the user's index "{index}" before each turn. Results appear in a
@@ -117,8 +119,8 @@ class _Turn:
         self.searches: list[_Search] = []
 
     def matches(self, user_content: str) -> bool:
-        text = " ".join(user_content.split())
-        return bool(self.message and text) and (self.message in text or text in self.message)
+        text = " ".join(_IMAGE_MARKER.sub("", user_content).split())
+        return bool(self.message) and self.message == text
 
 
 class RelevanMemoryProvider(MemoryProvider):
@@ -231,15 +233,18 @@ class RelevanMemoryProvider(MemoryProvider):
         """The searches of the turn that just ended.
 
         Hermes runs `sync_turn` on a background worker, so the next turn can
-        start first. The ended turn is the oldest open turn whose message
-        matches, else the oldest open turn. Older open turns never got a
-        sync and are dropped.
+        start first, and it skips the sync of an interrupted or failed turn.
+        The ended turn is the oldest open turn whose message equals
+        `user_content`, without the image count Hermes puts in front of a
+        message with images. Older open turns never got a sync and are dropped.
+        With no match, nothing is judged.
         """
         with self._lock:
             turns = self._turns.get(session_id or self._session_id, [])
-            if not turns:
+            index = next((i for i, turn in enumerate(turns) if turn.matches(user_content)), None)
+            if index is None:
+                logger.info("Relevan: no open turn matches the synced message; no feedback sent")
                 return []
-            index = next((i for i, turn in enumerate(turns) if turn.matches(user_content)), 0)
             ended = turns[index]
             del turns[: index + 1]
             return ended.searches
