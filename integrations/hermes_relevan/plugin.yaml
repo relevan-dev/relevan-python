@@ -1,0 +1,8 @@
+name: relevan
+version: 0.1.0
+description: "Relevan search as Hermes memory: recall from your notes, documents or product catalog before each turn, and feedback on the results the reply used, so the ranking learns."
+requires_hermes: ">=0.23.2"
+requires_env:
+  - RELEVAN_API_KEY
+license: Apache-2.0
+homepage: https://github.com/relevan-dev/relevan-python/tree/main/integrations/hermes_relevan

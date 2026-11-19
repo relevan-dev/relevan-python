@@ -102,6 +102,14 @@ import warnings
 warnings.simplefilter("once", category=None)  # or filter RelevanBetaWarning specifically
 ```
 
+## Integrations
+
+`integrations/` holds plugins that use this client inside other tools. Each
+has its own README and its own dependencies.
+
+- [`integrations/hermes_relevan`](integrations/hermes_relevan): a memory
+  provider for Hermes Agent, with feedback on the results each reply used.
+
 ## Regenerating the client
 
 `src/relevan/_generated/` is generated from the live OpenAPI spec and is
