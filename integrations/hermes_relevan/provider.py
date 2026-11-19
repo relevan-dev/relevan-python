@@ -254,6 +254,14 @@ class RelevanMemoryProvider(MemoryProvider):
                     )
                 except Exception as exc:
                     logger.warning("Relevan feedback failed: %s", exc)
+                    continue
+                logger.info(
+                    "Relevan llm_judgment sent: query %s, result %s, grade %d (%s)",
+                    search.query_id,
+                    usage.hit.object_id,
+                    usage.grade,
+                    usage.reason,
+                )
 
     def _feedback(self, **fields: Any) -> None:
         fields = {k: v for k, v in fields.items() if v not in (None, "")}
