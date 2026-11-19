@@ -264,3 +264,31 @@ def test_non_primary_agents_get_no_feedback_tool(
         )
     assert "error" in result
     assert feedback.calls.call_count == 0
+
+
+@respx.mock
+def test_a_late_sync_judges_only_its_own_turn(provider: RelevanMemoryProvider) -> None:
+    respx.post(SEARCH_URL).mock(
+        side_effect=[
+            httpx.Response(200, json=_search_body("turn-1")),
+            httpx.Response(200, json=_search_body("turn-2")),
+        ]
+    )
+    feedback = respx.post(FEEDBACK_URL).mock(return_value=ACCEPTED)
+
+    provider.on_turn_start(1, "how are my VMs backed up?")
+    provider.prefetch("how are my VMs backed up?", session_id="hermes-session")
+    provider.on_turn_start(2, "which port does the VPN use?")
+    provider.prefetch("which port does the VPN use?", session_id="hermes-session")
+    provider.sync_turn(
+        "how are my VMs backed up?", "See [obsidian:proxmox-1].", session_id="hermes-session"
+    )
+    provider.sync_turn(
+        "which port does the VPN use?", "See [obsidian:wireguard-2].", session_id="hermes-session"
+    )
+    provider.shutdown()
+
+    assert sorted((b["queryId"], b["objectId"]) for b in _feedback_bodies(feedback)) == [
+        ("turn-1", "obsidian:proxmox-1"),
+        ("turn-2", "obsidian:wireguard-2"),
+    ]

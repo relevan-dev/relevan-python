@@ -32,6 +32,7 @@ SNIPPET_CHARS = 600
 SHORT_FIELD_CHARS = 80
 PREFETCH_BUDGET_S = 6.0
 MAX_RECALLS_PER_TURN = 8
+MAX_OPEN_TURNS = 4
 
 SYSTEM_PROMPT = """# Relevan search memory
 Relevan searches the user's index "{index}" before each turn. Results appear in a
@@ -108,6 +109,18 @@ class _Search:
         self.hits = hits
 
 
+class _Turn:
+    """One user turn: its message, and the searches whose results the model saw in it."""
+
+    def __init__(self, message: str) -> None:
+        self.message = " ".join(message.split())
+        self.searches: list[_Search] = []
+
+    def matches(self, user_content: str) -> bool:
+        text = " ".join(user_content.split())
+        return bool(self.message and text) and (self.message in text or text in self.message)
+
+
 class RelevanMemoryProvider(MemoryProvider):
     """Search a Relevan index before each turn, and report which results the reply used."""
 
@@ -118,7 +131,7 @@ class RelevanMemoryProvider(MemoryProvider):
         self._session_id = ""
         self._agent_context = "primary"
         self._lock = threading.Lock()
-        self._turn_searches: dict[str, list[_Search]] = {}
+        self._turns: dict[str, list[_Turn]] = {}
         self._judged: set[tuple[str, str]] = set()
         self._last_count: int | None = None
         self._threads: list[threading.Thread] = []
@@ -198,12 +211,38 @@ class RelevanMemoryProvider(MemoryProvider):
             hits.append(RecalledHit(hit.id, position, title, text))
         return _Search(query, context.query_id, hits)
 
-    def _record(self, search: _Search, session_id: str) -> None:
-        """Keep a search whose results the model saw, for this turn's feedback check."""
+    def on_turn_start(self, turn_number: int, message: str, **kwargs: Any) -> None:
         with self._lock:
-            searches = self._turn_searches.setdefault(session_id or self._session_id, [])
+            turns = self._turns.setdefault(self._session_id, [])
+            turns.append(_Turn(message or ""))
+            del turns[:-MAX_OPEN_TURNS]
+
+    def _record(self, search: _Search, session_id: str) -> None:
+        """Keep a search whose results the model saw, under the turn that is running."""
+        with self._lock:
+            turns = self._turns.setdefault(session_id or self._session_id, [])
+            if not turns:
+                turns.append(_Turn(search.query))
+            searches = turns[-1].searches
             searches.append(search)
             del searches[:-MAX_RECALLS_PER_TURN]
+
+    def _take_turn(self, session_id: str, user_content: str) -> list[_Search]:
+        """The searches of the turn that just ended.
+
+        Hermes runs `sync_turn` on a background worker, so the next turn can
+        start first. The ended turn is the oldest open turn whose message
+        matches, else the oldest open turn. Older open turns never got a
+        sync and are dropped.
+        """
+        with self._lock:
+            turns = self._turns.get(session_id or self._session_id, [])
+            if not turns:
+                return []
+            index = next((i for i, turn in enumerate(turns) if turn.matches(user_content)), 0)
+            ended = turns[index]
+            del turns[: index + 1]
+            return ended.searches
 
     def prefetch(self, query: str, *, session_id: str = "") -> str:
         self._last_count = None
@@ -245,8 +284,7 @@ class RelevanMemoryProvider(MemoryProvider):
         session_id: str = "",
         messages: list[dict[str, Any]] | None = None,
     ) -> None:
-        with self._lock:
-            searches = self._turn_searches.pop(session_id or self._session_id, [])
+        searches = self._take_turn(session_id, user_content)
         if not searches or not self._config["auto_feedback"]:
             return
         if self._agent_context != "primary":
