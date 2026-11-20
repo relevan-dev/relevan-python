@@ -1,16 +1,24 @@
 # relevan (Python)
 
-> Python client for the Relevan search API — typed, generated from Relevan's live OpenAPI spec, with built-in rate-limit retry and clearly-marked beta endpoints.
+> Python client for the Relevan search API — typed, generated from Relevan's live OpenAPI spec, with built-in rate-limit retry and clearly-marked beta endpoints. Install it with `pip install relevan`.
 
 ## Reference
 
-- [README](https://github.com/relevan-dev/relevan-python/blob/main/README.md): install, quickstart, auth, rate limits, beta endpoints.
+- [README](https://github.com/relevan-dev/relevan-python/blob/main/README.md): install, quickstart, auth, integration name, rate limits, beta endpoints.
+- [CHANGELOG](https://github.com/relevan-dev/relevan-python/blob/main/CHANGELOG.md): what each release changed.
 - Every public method carries a full docstring (Args/Returns/Raises/Example) — introspect with `help(client.search.search)` rather than guessing signatures.
-- [Relevan API's own llms.txt](https://api.relevan.dev/llms.txt): the underlying HTTP API this client wraps, including why sending feedback after a search matters.
+- [Relevan API's own llms.txt](https://api.relevan.dev/llms.txt): the underlying HTTP API this client wraps, the limits of each plan, and the hosted MCP server.
+- [Get your data in](https://docs.relevan.dev/guides/get-your-data-in): the first upload and the first search, with the API or with this client.
 
 ## Notes for an agent using this package
 
 - `Client()` / `AsyncClient()` read `RELEVAN_API_KEY` from the environment; pass `api_key=` to override.
 - Call `client.organizations.list()` once to resolve `orgId` before calling any other method.
-- `client.search.search(...)` returns `search_context.query_id` — pass it to `client.beta.send_feedback(...)` after acting on a result. This is not optional: it is what improves future search quality.
-- Anything under `client.beta` may change without notice; each call raises `RelevanBetaWarning`.
+- `client.search.search(...)` returns `search_context.query_id` — pass it to `client.beta.send_feedback(...)` after acting on a result. Relevan trains the ranking of the index from this feedback.
+- `client.usage.get(org_id)` gives the plan's storage cap and the storage that remains. Read it before a large upload.
+- A library built on this client passes its own name: `Client(integration="<name>/<version>")`. The default is `python/<version>`.
+- Anything under `client.beta` may change without notice; each call emits a `RelevanBetaWarning`.
+
+## Integrations
+
+- [hermes_relevan](https://github.com/relevan-dev/relevan-python/tree/main/integrations/hermes_relevan): a memory provider for Hermes Agent. It searches a Relevan index before each turn and sends feedback on the results the reply used. It is a separate Hermes plugin, not part of the `relevan` package.
